@@ -133,10 +133,12 @@ export const userDummyData = {
 export const hotelDummyData = {
     "_id": "67f76393197ac559e4089b72",
     "name": "Urbanza Suites",
-    "address": "Main Road  123 Street , 23 Colony",
+    "address": "Main Road  123 Street, 23 Colony",
     "contact": "+0123456789",
     "owner": userDummyData,
-    "city": "New York",
+    "city": "New York, USA",
+    "rating": 5,
+    "reviews": 185,
     "createdAt": "2025-04-10T06:22:11.663Z",
     "updatedAt": "2025-04-10T06:22:11.663Z",
     "__v": 0
@@ -193,7 +195,7 @@ export const roomsDummyData = [
         "__v": 0
     },
      {
-        "_id": "67f7647c197ac559e4089b96",
+        "_id": "67f7647c197ac559e4089b97",
         "hotel": hotelDummyData,
         "roomType": "Double Bed",
         "pricePerNight": 399,
@@ -205,7 +207,7 @@ export const roomsDummyData = [
         "__v": 0
     },
     {
-        "_id": "67f76452197ac559e4089b8e",
+        "_id": "67f76452197ac559e4089b8g",
         "hotel": hotelDummyData,
         "roomType": "Double Bed",
         "pricePerNight": 299,
@@ -217,7 +219,7 @@ export const roomsDummyData = [
         "__v": 0
     },
     {
-        "_id": "67f76406197ac559e4089b82",
+        "_id": "67f76406197ac559e4089b88",
         "hotel": hotelDummyData,
         "roomType": "Double Bed",
         "pricePerNight": 249,
@@ -229,7 +231,7 @@ export const roomsDummyData = [
         "__v": 0
     },
     {
-        "_id": "67f763d8197ac559e4089b7a",
+        "_id": "67f763d8197ac559e4089b77",
         "hotel": hotelDummyData,
         "roomType": "Single Bed",
         "pricePerNight": 199,

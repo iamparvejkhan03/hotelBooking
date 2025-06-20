@@ -17,7 +17,7 @@ function Hero(){
     }
 
     return (
-        <section className={`min-h-screen min-w-screen py-24 flex items-center bg-[url('./assets/heroImage.png')] bg-no-repeat bg-cover`}>
+        <section className={`min-h-screen max-w-screen py-24 flex items-center bg-[url('./assets/heroImage.png')] bg-no-repeat bg-cover`}>
             <Container>
                 <div className="text-white">
                     <p className="bg-blue-400 text-sm sm:text-base rounded-full inline-block py-1 px-5">Book Smart. Stay Instantly.</p>

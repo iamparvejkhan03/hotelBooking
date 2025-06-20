@@ -1,4 +1,4 @@
-import { Hero, Heading, Container, RoomCard, OfferCard, TestimonialCard, Input } from "../components";
+import { Hero, Heading, Container, HotelCard, OfferCard, TestimonialCard, Input, TrustedBy } from "../components";
 import {roomsDummyData, exclusiveOffers, testimonials} from '../assets/assets';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -16,6 +16,9 @@ function Home(){
     return (
         <>
             <Hero />
+
+            <TrustedBy />
+
             <section className="bg-blue-100">
                 <Container>
                     <Heading heading="Featured Destination" subHeading="Discover our handpicked selection of exceptional properties around the world, offering unparalleled luxury and unforgotable experience." />
@@ -38,7 +41,7 @@ function Home(){
                         {
                             roomsDummyData.map(room => (
                                 <SwiperSlide>
-                                    <RoomCard key={room._id} room={room} />
+                                    <HotelCard key={room._id} room={room} />
                                 </SwiperSlide>
                             ))
                         }

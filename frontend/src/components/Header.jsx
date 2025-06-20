@@ -1,28 +1,31 @@
 import { useEffect, useState } from "react";
 import { assets } from "../assets/assets";
 import {Container} from "./";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 const navLinks = [
     {name:'Home', link:'/'},
-    {name:'Hotels', link:'/hotels'},
+    {name:'Rooms', link:'/rooms'},
     {name:'About', link:'/about'},
     {name:'Contact', link:'/contact'},
 ];
 
 function Header(){
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isScrolled, setIsScrolled] = useState(false);    
+    const [isScrolled, setIsScrolled] = useState(false);  
+    const {pathname} = useLocation();
 
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 10);
         }
 
-        window.addEventListener('scroll', handleScroll)
+        setIsScrolled(pathname !== '/');
+
+        pathname === '/' && window.addEventListener('scroll', handleScroll)
 
         return () => window.removeEventListener('scroll', handleScroll);
-    }, [])
+    }, [pathname])
 
     return (
         <header className={`bg-transparent fixed top-0 w-full ${isScrolled && 'bg-white drop-shadow-md drop-shadow-gray-500'} z-30`}>
@@ -43,7 +46,7 @@ function Header(){
                 </nav>
 
                 {/* Navlinks for smaller screens */}
-                <nav className={`lg:hidden bg-white absolute top-0 left-0 min-h-screen w-0 transition-all duration-200 overflow-hidden text-center flex items-center justify-center ${isMenuOpen && 'w-full'} z-40`}>
+                <nav onClick={() => setIsMenuOpen(false)} className={`lg:hidden bg-white absolute top-0 left-0 min-h-screen w-0 transition-all duration-200 overflow-hidden text-center flex items-center justify-center ${isMenuOpen && 'w-full'} z-40`}>
                     <ul className="">
                         {
                             navLinks.map(link => (
@@ -55,8 +58,9 @@ function Header(){
                         </li>
                     </ul>
                 </nav>
+
                 <div className="hidden lg:flex lg:items-center">
-                    <img src={assets.searchIcon} className="h-8 mx-10" alt="search icon" />
+                    <img src={assets.searchIcon} className={`h-8 mx-10 ${isScrolled && 'invert'}`} alt="search icon" />
                     <button className="inline text-white bg-black border border-black px-8 py-2 rounded-full cursor-pointer hover:bg-black/80">Login</button>
                 </div>
 

@@ -1,28 +1,42 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faLocationDot, faStar} from '@fortawesome/free-solid-svg-icons';
+import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { assets, facilityIcons } from "../assets/assets";
 import { Link } from "react-router-dom";
 
 function RoomCard({room}){
     return (
-        <div to="" className="text-gray-600 bg-white rounded-md overflow-hidden  shadow-md">
-            <Link>
-                <img src={room.images[0]} alt="roomImg" className="w-full" />
-                <div className="p-5">
-                    <div className="flex">
-                        <div>
-                            <h5 className="text-lg">{room.hotel.name}</h5>
-                            <p><FontAwesomeIcon icon={faLocationDot} /> {room.hotel.address}</p>
-                        </div>
-                        <p><FontAwesomeIcon className="text-yellow-600" icon={faStar} /> 4.5</p>
-                    </div>
+        <Link to={`/room/${room._id}`} className="flex flex-col md:flex-row gap-5 md:gap-10 py-6 md:py-8 lg:py-10 border-b-2 border-b-gray-300">
+            <img src={room.images[0]} alt="roomImg" className="md:h-64 md:w-1/2 object-cover rounded-lg" />
+            <div className="flex flex-col justify-around">
+                <p className="text-gray-600 text-sm md:text-base">{room.hotel.address}</p>
 
-                    <div className="flex justify-between items-center mt-3">
-                        <p><span className="text-lg text-black">$399</span>/night</p>
-                        <button className="border-2 border-blue-200 rounded px-3 py-1 cursor-pointer">Book Now</button>
-                    </div>
+                <h5 className="text-lg lg:text-xl">{room.hotel.name}</h5>
+
+                <p className="flex my-2">
+                    {
+                        Array(5).fill('').map((_, i) => (
+                            room.hotel.rating > i ? <img src={assets.starIconFilled} alt="star" key={i} className="h-4" /> : <img src={assets.starIconOutlined} alt="no-star" key={i} className="h-4" />
+                        ))
+                    }
+                    <span className="mx-2">{room.hotel.reviews}+ reviews</span>
+                </p>
+
+                <p className="text-gray-600"><FontAwesomeIcon icon={faLocationDot} /> {room.hotel.city}</p>
+
+                <div className="flex text-sm gap-2 flex-wrap my-3">
+                    {
+                        room.amenities.map((amenity, i) => (
+                            <span key={amenity} className="flex gap-2 rounded-md bg-blue-100 p-2">
+                                <img className="h-4" src={facilityIcons[amenity]} alt={amenity} />
+                                <p>{amenity}</p>
+                            </span>
+                        ))
+                    }
                 </div>
-            </Link>
-        </div>
+
+                <p className="font-semibold">${room.pricePerNight}/day</p>
+            </div>
+        </Link>
     );
 }
 

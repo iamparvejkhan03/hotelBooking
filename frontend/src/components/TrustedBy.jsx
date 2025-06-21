@@ -34,8 +34,8 @@ function TrustedBy(){
                 <div className="min-w-[200%]">
                     <div className="flex items-center justify-between inner gap-8 sm:gap-10 md:gap-12 lg:gap-16 xl:gap-20">
                         {
-                            [...logos, ...logos].map(logo => (
-                                <img className="h-8 md:h-10" src={logo.src} alt={logo.name} key={logo.name} />
+                            [...logos, ...logos].map((logo, i) => (
+                                <img className="h-8 md:h-10" src={logo.src} alt={logo.name} key={i} />
                             ))
                         }
                     </div>

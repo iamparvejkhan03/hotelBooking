@@ -117,10 +117,10 @@ export const roomCommonData = [
 // User Dummy Data
 export const userDummyData = {
     "_id": "user_2unqyL4diJFP1E3pIBnasc7w8hP",
-    "username": "Great Stack",
-    "email": "user.greatstack@gmail.com",
+    "username": "John Doe",
+    "email": "john.doe@gmail.com",
     "image": "https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvdXBsb2FkZWQvaW1nXzJ2N2c5YVpSSEFVYVUxbmVYZ2JkSVVuWnFzWSJ9",
-    "role": "hotelOwner",
+    "role": "owner",
     "createdAt": "2025-03-25T09:29:16.367Z",
     "updatedAt": "2025-04-10T06:34:48.719Z",
     "__v": 1,
@@ -128,6 +128,30 @@ export const userDummyData = {
         "New York"
     ]
 }
+
+export const ourTeam = [
+    {
+        '_id': '874sa393197ac559e4089x47',
+        'name': 'Jack Thompson',
+        'post': 'CTO',
+        'about': 'He has been a dedicated member of this family as a developer since the beginning.',
+        'image': 'https://images.unsplash.com/photo-1596075780750-81249df16d19?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+    },
+    {
+        '_id': '67e7h883197ac559e4087dfe',
+        'name': 'Ethan Miller',
+        'post': 'HR Head',
+        'about': 'Ethan manages the human resource in the company.',
+        'image': 'https://plus.unsplash.com/premium_photo-1689977968861-9c91dbb16049?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+    },
+    {
+        '_id': 'qa12883197ac559e40845lo',
+        'name': 'Emily Carter',
+        'post': 'Support Team Head',
+        'about': 'She is dedicated to enhance the users experience in our hotels.',
+        'image': 'https://plus.unsplash.com/premium_photo-1689551670902-19b441a6afde?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+    },
+]
 
 // Hotel Dummy Data
 export const hotelDummyData = {

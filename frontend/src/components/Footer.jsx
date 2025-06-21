@@ -8,7 +8,7 @@ const Navlinks = [
     {name:'Home', href:'/'},
     {name:'About Us', href:'/about'},
     {name:'Contact Us', href:'/contact'},
-    {name:'Privacy Policy', href:'/privacy-policy'},
+    {name:'Privacy Policy', href:'/privacy'},
 ];
 
 function Footer(){

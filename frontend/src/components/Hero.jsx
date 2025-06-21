@@ -20,7 +20,7 @@ function Hero(){
         <section className={`min-h-screen max-w-screen py-24 flex items-center bg-[url('./assets/heroImage.png')] bg-no-repeat bg-cover`}>
             <Container>
                 <div className="text-white">
-                    <p className="bg-blue-400 text-sm sm:text-base rounded-full inline-block py-1 px-5">Book Smart. Stay Instantly.</p>
+                    <p className="bg-blue-400 text-sm sm:text-base rounded-full inline-block py-1 px-5">Book Smart. Stay Instantly</p>
                     <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold my-3 md:my-4 break-normal">Find Your Ideal Stay, Instantly</h1>
                     <p className="md:text-lg">Discover a curated collection of exclusive hotels and resorts. Your perfect escape begins here.</p>
                 </div>
@@ -30,8 +30,10 @@ function Hero(){
                     <option value="Mumbai">Mumbai</option>
                 </datalist>
 
+                {/* flex sm:flex-row items-end sm:w-xl lg:w-2xl xl:w-5xl flex-wrap */}
+
                 <form onSubmit={handleSubmit(handleSearchForm)} className="my-5">
-                    <div className="bg-white p-6 rounded-md flex sm:flex-row items-end sm:w-xl lg:w-2xl xl:w-5xl flex-wrap">
+                    <div className="bg-white p-6 rounded-md grid md:grid-cols-2 md:gap-2 lg:grid-cols-5 lg:gap-5 items-end sm:w-xl lg:w-4xl xl:w-5xl">
                         <Input type="text" list="cities" label="Destination" labelIcon={faLocationDot} placeholder="Type here" {...register('destination', {required:true})}  />
 
                         <Input type="number" label="No. of Guests" labelIcon={faUser} placeholder="0" {...register('guests', {required:true})} />

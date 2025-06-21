@@ -1,10 +1,12 @@
-import { Outlet } from "react-router-dom";
-import { Header, Footer } from "./components";
+import { Outlet, useLocation } from "react-router-dom";
+import { Header, Footer, ScrollToTop } from "./components";
 
 function App(){
+    const {pathname} = useLocation();
     return (
         <main>
-            <Header />
+            <ScrollToTop />
+            {!pathname.includes('owner') && <Header />}
             <Outlet />
             <Footer />
         </main>

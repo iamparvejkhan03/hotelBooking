@@ -9,6 +9,10 @@ import RoomCard from "./RoomCard";
 import OfferCard from "./OfferCard";
 import TestimonialCard from "./TestimonialCard";
 import TrustedBy from "./TrustedBy";
+import ScrollToTop from "./ScrollToTop";
+import OwnerHeader from "./owner/OwnerHeader";
+import OwnerSidebar from "./owner/OwnerSidebar";
+import OwnerContainer from "./owner/OwnerContainer";
 
 export {
     Header, 
@@ -22,4 +26,8 @@ export {
     OfferCard,
     TestimonialCard,
     TrustedBy,
+    ScrollToTop,
+    OwnerHeader,
+    OwnerSidebar,
+    OwnerContainer,
 }

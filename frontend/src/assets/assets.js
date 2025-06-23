@@ -173,7 +173,7 @@ export const roomsDummyData = [
     {
         "_id": "67f7647c197ac559e4089b96",
         "hotel": hotelDummyData,
-        "roomType": "Double Bed",
+        "roomType": "Single Bed",
         "pricePerNight": 399,
         "amenities": ["Room Service", "Mountain View", "Pool Access"],
         "images": [roomImg1, roomImg2, roomImg3, roomImg4],
@@ -233,7 +233,7 @@ export const roomsDummyData = [
     {
         "_id": "67f76452197ac559e4089b8g",
         "hotel": hotelDummyData,
-        "roomType": "Double Bed",
+        "roomType": "Single Bed",
         "pricePerNight": 299,
         "amenities": ["Room Service", "Mountain View", "Pool Access"],
         "images": [roomImg2, roomImg3, roomImg4, roomImg1],
@@ -283,7 +283,7 @@ export const userBookingsDummyData = [
         "guests": 1,
         "status": "pending",
         "paymentMethod": "Stripe",
-        "isPaid": true,
+        "isPaid": false,
         "createdAt": "2025-04-10T06:42:01.529Z",
         "updatedAt": "2025-04-10T06:43:54.520Z",
         "__v": 0
@@ -297,9 +297,9 @@ export const userBookingsDummyData = [
         "checkOutDate": "2025-04-28T00:00:00.000Z",
         "totalPrice": 399,
         "guests": 1,
-        "status": "pending",
+        "status": "paid",
         "paymentMethod": "Pay At Hotel",
-        "isPaid": false,
+        "isPaid": true,
         "createdAt": "2025-04-10T06:41:45.873Z",
         "updatedAt": "2025-04-10T06:41:45.873Z",
         "__v": 0

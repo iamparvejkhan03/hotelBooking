@@ -2,21 +2,20 @@ import { NavLink } from "react-router-dom";
 import { assets } from "../../assets/assets";
 
 const navigation = [
-    {name:'Dashboard', path:'/owner/dashboard', icon:assets.dashboardIcon},
-    {name:'Add Room', path:'/owner/add-room', icon:assets.addIcon},
-    {name:'All Rooms', path:'/owner/all-rooms', icon:assets.listIcon},
+    {name:'Dashboard', path:'/user/dashboard', icon:assets.dashboardIcon},
+    {name:'My Bookings', path:'/user/my-bookings', icon:assets.totalBookingIcon},
 ];
 
-function OwnerSidebar(){
+function UserSidebar(){
     return (
-        <aside className="border-r-2 border-r-blue-100 min-w-1/6 md:w-1/7">
+        <aside className="border-r-2 border-r-blue-100 w-1/6">
             <nav>
                 <ul>
                     {
                         navigation.map((link, i) => (
                             <li key={i}>
                                 <NavLink to={link.path} className={({isActive}) => `px-1 py-2 md:py-3 md:px-5 flex justify-center md:justify-start items-center ${isActive && 'bg-blue-200 text-blue-500 border-r-3 border-r-blue-400'}`}>
-                                    <img src={link.icon} alt={link.name} className="inline mr-1 min-h-5" /> 
+                                    <img src={link.icon} alt={link.name} className="inline mr-1 max-h-6" /> 
                                     <span className="hidden md:block">{link.name}</span>
                                 </NavLink>
                             </li>
@@ -28,4 +27,4 @@ function OwnerSidebar(){
     );
 }
 
-export default OwnerSidebar;
+export default UserSidebar;

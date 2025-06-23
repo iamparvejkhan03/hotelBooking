@@ -1,4 +1,4 @@
-function OwnerContainer({children}){
+function UserContainer({children}){
     return (
         <div className="p-5 md:px-10 md:py-5">
             {children}
@@ -6,4 +6,4 @@ function OwnerContainer({children}){
     );
 }
 
-export default OwnerContainer;
+export default UserContainer;

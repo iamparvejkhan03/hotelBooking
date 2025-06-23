@@ -1,12 +1,18 @@
 import { Outlet, useLocation } from "react-router-dom";
-import { Header, Footer, ScrollToTop } from "./components";
+import { Header, Footer, ScrollToTop, HotelRegForm, UserAuth } from "./components";
+import { useState } from "react";
 
 function App(){
     const {pathname} = useLocation();
+    const [showRegForm, setShowRegForm] = useState(false);
+    const [showUserAuth, setShowUserAuth] = useState(false);
+
     return (
         <main>
             <ScrollToTop />
-            {!pathname.includes('owner') && <Header />}
+            {showRegForm && <HotelRegForm />}
+            {showUserAuth && <UserAuth />}
+            {(!pathname.includes('owner') && !pathname.includes('/user')) && <Header />}
             <Outlet />
             <Footer />
         </main>

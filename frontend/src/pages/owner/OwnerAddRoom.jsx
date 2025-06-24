@@ -43,7 +43,7 @@ function OwnerAddRoom(){
                                     <label key={i}>
                                         <input type="file" className="sr-only" name="images" onChange={(e) => setValue(`images.${img}`, e.target.files?.[0])} />
 
-                                        <img src={(images[img] instanceof File) ? URL.createObjectURL(images[img]) : assets.uploadArea} alt="Upload Area" className="h-20 object-cover cursor-pointer rounded-md" />
+                                        <img src={(images[img] instanceof File) ? URL.createObjectURL(images[img]) : assets.uploadArea} alt="Upload Area" className="h-28 sm:h-20 object-cover cursor-pointer rounded-md" />
                                     </label>
                                 ))
                             }

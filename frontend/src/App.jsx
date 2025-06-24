@@ -1,11 +1,12 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { Header, Footer, ScrollToTop, HotelRegForm, UserAuth } from "./components";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 function App(){
     const {pathname} = useLocation();
-    const [showRegForm, setShowRegForm] = useState(false);
-    const [showUserAuth, setShowUserAuth] = useState(false);
+    const showUserAuth = useSelector(state => state.user.showUserAuthForm);
+    const showRegForm = useSelector(state => state.hotel.showHotelRegForm);
 
     return (
         <main>

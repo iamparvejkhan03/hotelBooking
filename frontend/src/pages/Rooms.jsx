@@ -30,7 +30,7 @@ function Rooms(){
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     return (
         <>
-            <Container className='mt-24 lg:my-32 flex flex-col lg:flex-row justify-between items-start lg:gap-8'>
+            <Container className='mt-24 lg:mt-32 flex flex-col lg:flex-row justify-between items-start lg:gap-8'>
                 <section className="lg:w-9/12 xl:w-8/12 order-2 lg:order-1">
                     <Heading heading="Hotel Rooms" subHeading="Take advantage of our limited-time offer and special packages to enhance your stay and create unforgettable memories." />
 

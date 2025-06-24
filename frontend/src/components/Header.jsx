@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 import { assets } from "../assets/assets";
 import {Container} from "./";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleShowUserAuthForm } from "../features/forms/UserAuthSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDashboard, faHotel } from "@fortawesome/free-solid-svg-icons";
+import { toggleShowHotelRegForm } from "../features/forms/HotelRegSlice";
 
 const navLinks = [
     {name:'Home', link:'/'},
@@ -14,6 +19,9 @@ function Header(){
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);  
     const {pathname} = useLocation();
+
+    const dispatch = useDispatch();
+    const isUserLoggedIn = useSelector(state => state.user.isUserLoggedIn);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -54,19 +62,65 @@ function Header(){
                             ))
                         }
                         <li>
-                            <button className="inline text-white bg-black border border-black px-5 py-2 rounded-full cursor-pointer my-4 hover:bg-black/80">Login</button>
+                            {
+                                isUserLoggedIn
+                                &&
+                                <button onClick={() => dispatch(toggleShowHotelRegForm(true))} className="flex items-center gap-2 text-white bg-blue-500 border border-blue-500 px-5 py-2 rounded-full cursor-pointer my-4 hover:bg-blue-600">
+                                    <FontAwesomeIcon icon={faHotel} />
+                                    <span>
+                                        Add Hotel
+                                    </span>
+                                </button>
+                            }
+                        </li>
+                        <li>
+                            {
+                                !isUserLoggedIn 
+                                ? 
+                                <button className="inline text-white bg-black border border-black px-5 py-2 rounded-full cursor-pointer my-4 hover:bg-black/80" onClick={() => dispatch(toggleShowUserAuthForm(true))}>Login</button> 
+                                : 
+                                <Link to="/user/dashboard" className="flex items-center gap-2 text-white bg-black border border-black px-5 py-2 rounded-full cursor-pointer my- hover:bg-black/80">
+                                    <FontAwesomeIcon icon={faDashboard} />
+                                    <span>
+                                        Dashboard
+                                    </span>
+                                </Link>
+                            }
                         </li>
                     </ul>
                 </nav>
 
-                <div className="hidden lg:flex lg:items-center">
-                    <img src={assets.searchIcon} className={`h-8 mx-10 ${isScrolled && 'invert'}`} alt="search icon" />
-                    <button className="inline text-white bg-black border border-black px-8 py-2 rounded-full cursor-pointer hover:bg-black/80">Login</button>
+                <div className="hidden lg:flex lg:items-center gap-10">
+                    <img src={assets.searchIcon} className={`h-8 ${isScrolled && 'invert'}`} alt="search icon" />
+
+                    {
+                        isUserLoggedIn
+                        &&
+                        <button onClick={() => dispatch(toggleShowHotelRegForm(true))} className="flex items-center gap-2 text-white bg-blue-500 border border-blue-500 px-5 py-2 rounded-full cursor-pointer hover:bg-blue-600">
+                            <FontAwesomeIcon icon={faHotel} />
+                            <span>
+                                Add Hotel
+                            </span>
+                        </button>
+                    }
+
+                    {
+                        !isUserLoggedIn
+                        ?
+                        <button className="inline text-white bg-black border border-black px-8 py-2 rounded-full cursor-pointer hover:bg-black/80" onClick={() => dispatch(toggleShowUserAuthForm(true))}>Login</button>
+                        :
+                        <Link to="/user/dashboard" className="flex items-center gap-2 text-white bg-black border border-black px-5 py-2 rounded-full cursor-pointer hover:bg-black/80">
+                            <FontAwesomeIcon icon={faDashboard} />
+                            <span>
+                                Dashboard
+                            </span>
+                        </Link>
+                    }
                 </div>
 
                 <div className="lg:hidden z-50">
                     {
-                        isMenuOpen ? (<img onClick={() => setIsMenuOpen(!isMenuOpen)} src={assets.closeIcon} alt="menu icon" className={`h-5 invert-25 z-50 ${isScrolled}`} />) : (<img onClick={() => setIsMenuOpen(!isMenuOpen)} src={assets.menuIcon} alt="menu icon" className={`h-5 ${isScrolled && 'invert'}`} />)
+                        isMenuOpen ? (<img onClick={() => setIsMenuOpen(!isMenuOpen)} src={assets.closeIcon} alt="menu icon" className={`h-5 cursor-pointer invert-25 z-50 ${isScrolled}`} />) : (<img onClick={() => setIsMenuOpen(!isMenuOpen)} src={assets.menuIcon} alt="menu icon" className={`h-5 cursor-pointer ${isScrolled && 'invert'}`} />)
                     }
                 </div>
             </Container>

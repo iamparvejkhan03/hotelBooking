@@ -28,7 +28,7 @@ function Footer(){
                             <img src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/refs/heads/main/assets/appDownload/appleStoreBtnBlack.svg" alt="app store" className="h-10 w-auto border border-white rounded" />
                         </div>
                     </div>
-                    <div className="flex-1 flex-wrap flex items-start md:justify-end gap-6 sm:gap-8 md:gap-40">
+                    <div className="flex flex-1 flex-wrap gap-6 sm:gap-8 xl:gap-40 lg:justify-end">
                         <div>
                             <h2 className="font-semibold mb-5 text-black text-lg">Company</h2>
                             <ul className="text-base space-y-2">
@@ -42,8 +42,12 @@ function Footer(){
                         <div>
                             <h2 className="font-semibold mb-5 text-black text-lg">Get in touch</h2>
                             <div className="text-base space-y-2">
-                                <p>+1-234-567-890</p>
-                                <p className="break-all">contact@instastay.com</p>
+                                <p>
+                                    <a href="tel:+1-234-567-890" className="underline">+1-234-567-890</a>
+                                </p>
+                                <p className="break-all underline">
+                                    <a href="mailto:team@instastay.com">team@instastay.com</a>
+                                </p>
                             </div>
                             <div className='flex flex-wrap items-center mt-4'>
                                 <input type="text" className='bg-white max-w-32 lg:max-w-48 rounded-l border border-gray-300 h-9 px-3 outline-none' placeholder='Your email' />

@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import {Container, Input} from "./";
 import { faLocationDot, faUser, faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { assets } from "../assets/assets";
 
 function Hero(){
     const {register, handleSubmit, formState: {errors}, getValues, setValue} = useForm({
@@ -17,7 +18,7 @@ function Hero(){
     }
 
     return (
-        <section className={`min-h-screen max-w-screen py-24 flex items-center bg-[url('./assets/heroImage.png')] bg-no-repeat bg-cover`}>
+        <section style={{backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.4)), url('${assets.heroImg}')`}} className={`min-h-screen max-w-screen py-24 flex items-center bg-center bg-no-repeat bg-cover`}>
             <Container>
                 <div className="text-white">
                     <p className="bg-blue-400 text-sm sm:text-base rounded-full inline-block py-1 px-5">Book Smart. Stay Instantly</p>

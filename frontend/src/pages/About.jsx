@@ -9,9 +9,9 @@ function About() {
     return (
         <Container className="body-font mt-24 lg:mt-32">
             {/* Meet our people */}
-            <section className="">
+            <section>
                 <Heading heading="Meet our team" />
-                <div className="grid grid-cols-3 gap-16 mt-5 text-center text-gray-600">
+                <div className="grid md:grid-cols-3 gap-8 lg:gap-10 xl:gap-16 mt-5 text-center text-gray-600">
                     {
                         ourTeam.map(team => (
                             <div key={team._id} className="border border-blue-100 rounded p-10 hover:bg-blue-50">
@@ -100,10 +100,10 @@ function About() {
                 </div>
             </section>
 
-            {/* Testimonials section flex flex-wrap items-center justify-center gap-6  */}
+            {/* Testimonials section */}
             <section className="my-10 text-black">
                 <Heading heading="What our customers saying" />
-                <div className="pt-20 grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div className="pt-20 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-8 lg:gap-10">
                     <div className="text-sm border border-blue-100 pb-6 rounded-lg bg-white shadow-[0px_4px_15px_0px] shadow-black/5">
                         <div className="flex flex-col items-center px-5 py-4 relative">
                             <img className="h-24 w-24 absolute -top-14 rounded-full" src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200" alt="userImage1" />

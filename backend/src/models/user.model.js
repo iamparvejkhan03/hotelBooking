@@ -10,7 +10,8 @@ const userSchema = new Schema({
         type: String,
         required:true,
         trim:true,
-        unique:true
+        unique:true,
+        index:true,
     },
     phone: {
         type: String,
@@ -22,7 +23,7 @@ const userSchema = new Schema({
         required: true,
         trim:true
     }
-})
+}, {timestamps:true})
 
 const User = model('User', userSchema);
 

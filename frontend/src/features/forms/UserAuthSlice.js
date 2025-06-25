@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     showUserAuthForm: false,
-    isUserLoggedIn: true,
+    isUserLoggedIn: false,
+    user:{}
 };
 
 const UserAuthFormSlice = createSlice({
@@ -15,10 +16,13 @@ const UserAuthFormSlice = createSlice({
 
         toggleIsUserLoggedIn: (state, action) => {
             state.isUserLoggedIn = action.payload;
+        },
+        updateUser: (state, action) => {
+            state.user = action.payload;
         }
     }
 })
 
-export const { toggleShowUserAuthForm, toggleIsUserLoggedIn } = UserAuthFormSlice.actions;
+export const { toggleShowUserAuthForm, toggleIsUserLoggedIn, updateUser } = UserAuthFormSlice.actions;
 
 export const UserAuthFormReducers = UserAuthFormSlice.reducer;

@@ -1,16 +1,35 @@
 import { useForm } from "react-hook-form";
 import { Input } from "./";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { toggleIsUserLoggedIn, toggleShowUserAuthForm, updateUser } from "../features/forms/UserAuthSlice";
+import { useNavigate } from "react-router-dom";
 
 function UserRegForm({isLoginActive, setIsLoginActive}){
     const {register, handleSubmit} = useForm({defaultValues:{
-            name:'',
-            email:'',
-            phone:'',
-            password:''
-        }})
+        fullName:'',
+        email:'',
+        phone:'',
+        password:''
+    }});
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     
-    const registerFormHandler = (data) => {
-        console.log(data);
+    const registerFormHandler = async (formData) => {
+        try {
+            const {data} = await axios.post(`/api/v1/users/register`, {fullName:formData.fullName, email:formData.email, phone:formData.phone, password:formData.password});
+
+            if(data){
+                console.log(data.data);
+                dispatch(updateUser(data.data));
+                dispatch(toggleIsUserLoggedIn(true));
+                dispatch(toggleShowUserAuthForm(false));
+                navigate('/user/dashboard');
+            }
+        } catch (error) {
+            console.error(error.message);
+        }
     }
 
     return (
@@ -18,7 +37,7 @@ function UserRegForm({isLoginActive, setIsLoginActive}){
             <form onSubmit={handleSubmit(registerFormHandler)}>
                 <h3 className="text-2xl text-center my-5">Register</h3>
 
-                <Input type="text" placeholder="Full Name" className="focus-within:outline-2 focus-within:outline-blue-300" {...register('name', {required:true})} />
+                <Input type="text" placeholder="Full Name" className="focus-within:outline-2 focus-within:outline-blue-300" {...register('fullName', {required:true})} />
 
                 <Input type="email" placeholder="E-mail" className="focus-within:outline-2 focus-within:outline-blue-300" {...register('email', {required:true})} />
 

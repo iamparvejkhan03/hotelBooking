@@ -1,5 +1,10 @@
 import { useForm } from "react-hook-form";
 import { Input } from "./";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toggleIsUserLoggedIn, toggleShowUserAuthForm, updateUser } from "../features/forms/UserAuthSlice";
+import toast from "react-hot-toast";
 
 function UserLogForm({isLoginActive, setIsLoginActive, isForgotPasswordActive, setIsForgotPasswordActive}){
 
@@ -8,13 +13,30 @@ function UserLogForm({isLoginActive, setIsLoginActive, isForgotPasswordActive, s
         password:''
     }})
 
-    const loginFormHandler = (data) => {
-        console.log(data);
+    const dispatch = (useDispatch());
+    const navigate = useNavigate();
+
+    const loginHandler = async (loginData) => {
+        try {
+            const {data} = await axios.post('/api/v1/users/login', {email:loginData.email, password:loginData.password});
+
+            if(data){
+                const accessToken = data.data.accessToken;
+                dispatch(toggleIsUserLoggedIn(true));
+                dispatch(toggleShowUserAuthForm(false));
+                dispatch(updateUser({...data.data.user, accessToken}));
+                toast.success(data.message);
+                navigate('/user/dashboard');
+            }
+        } catch (error) {
+            console.error(error.message);
+            toast.error(error.response.data.message);
+        }
     }
 
     return (
         <section className={`w-1/2 my-5 ${!isLoginActive && '-translate-x-10'} ${isForgotPasswordActive && 'translate-x-10'}`}>
-            <form onSubmit={handleSubmit(loginFormHandler)}>
+            <form onSubmit={handleSubmit(loginHandler)}>
                 <h3 className="text-2xl text-center mb-3">Login</h3>
 
                 <Input type="email" placeholder="E-mail" className="focus-within:outline-2 focus-within:outline-blue-300" {...register('email', {required:true})} />

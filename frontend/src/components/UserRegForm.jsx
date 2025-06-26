@@ -4,6 +4,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { toggleIsUserLoggedIn, toggleShowUserAuthForm, updateUser } from "../features/forms/UserAuthSlice";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function UserRegForm({isLoginActive, setIsLoginActive}){
     const {register, handleSubmit} = useForm({defaultValues:{
@@ -21,10 +22,11 @@ function UserRegForm({isLoginActive, setIsLoginActive}){
             const {data} = await axios.post(`/api/v1/users/register`, {fullName:formData.fullName, email:formData.email, phone:formData.phone, password:formData.password});
 
             if(data){
-                console.log(data.data);
-                dispatch(updateUser(data.data));
+                const accessToken = data.data.accessToken;
+                dispatch(updateUser({...data.data.user, accessToken}));
                 dispatch(toggleIsUserLoggedIn(true));
                 dispatch(toggleShowUserAuthForm(false));
+                toast.success(data.message);
                 navigate('/user/dashboard');
             }
         } catch (error) {

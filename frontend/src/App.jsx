@@ -2,6 +2,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { Header, Footer, ScrollToTop, HotelRegForm, UserAuth } from "./components";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { Toaster } from "react-hot-toast";
 
 function App(){
     const {pathname} = useLocation();
@@ -11,6 +12,7 @@ function App(){
     return (
         <main>
             <ScrollToTop />
+            <Toaster />
             {showRegForm && <HotelRegForm />}
             {showUserAuth && <UserAuth />}
             {(!pathname.includes('owner') && !pathname.includes('/user')) && <Header />}

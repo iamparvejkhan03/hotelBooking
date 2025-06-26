@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { assets } from "../assets/assets";
 import {Container} from "./";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleShowUserAuthForm } from "../features/forms/UserAuthSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,6 +19,7 @@ function Header(){
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);  
     const {pathname} = useLocation();
+    const navigate = useNavigate();
 
     const dispatch = useDispatch();
     const isUserLoggedIn = useSelector(state => state.user.isUserLoggedIn);

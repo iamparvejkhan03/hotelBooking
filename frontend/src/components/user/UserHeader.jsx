@@ -1,16 +1,34 @@
 import { assets } from "../../assets/assets";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOut, faUser } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleIsUserLoggedIn, updateUser } from "../../features/forms/UserAuthSlice";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 function UserHeader(){
     const [showUserMenu, setShowUserMenu] = useState(false);
 
     const user = useSelector(state => state.user.user);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-    console.log(user)
+    const logoutHandler = async () => {
+        try {
+            const { data } = await axios.get('/api/v1/users/logout', {headers: {Authorization: `Bearer ${user.accessToken}`}});
+
+            if(data){
+                dispatch(toggleIsUserLoggedIn(false));
+                dispatch(updateUser({}));
+                navigate('/');
+                toast.success(data.message);
+            }
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
 
     return (
         <header className="flex w-full py-4 px-10 justify-between border-b border-b-blue-100">
@@ -29,7 +47,7 @@ function UserHeader(){
                                 <span>{user.fullName || 'User'}</span>
                             </Link>
                         </li>
-                        <li className="flex gap-2 items-center cursor-pointer px-5 py-1">
+                        <li className="flex gap-2 items-center cursor-pointer px-5 py-1" onClick={logoutHandler}>
                             <FontAwesomeIcon icon={faSignOut} />
                             <span>Log Out</span>
                         </li>

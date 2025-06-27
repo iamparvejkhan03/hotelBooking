@@ -21,6 +21,8 @@ import UserRegForm from "./UserRegForm";
 import UserLogForm from "./UserLogForm";
 import UserAuth from "./UserAuth";
 import ForgotPasswordForm from "./ForgotPasswordForm";
+import Protected from "./protected";
+import DeleteModalDialogue from "./DeleteModalDialogue";
 
 export {
     Header, 
@@ -46,4 +48,6 @@ export {
     UserLogForm,
     UserAuth,
     ForgotPasswordForm,
+    Protected,
+    DeleteModalDialogue,
 }

@@ -28,8 +28,7 @@ const userSchema = new Schema({
     image: {
         type: String,
         required:false,
-        trim:true,
-        default:null
+        trim:true
     },
     refreshToken: {
         type: String,

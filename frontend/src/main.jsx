@@ -3,12 +3,13 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.jsx';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { About, Contact, Home, Privacy, Room, Rooms } from './pages';
+import { About, Contact, Home, Privacy, ResetPassword, Room, Rooms } from './pages';
 import { OwnerDashboard, OwnerLayout, OwnerAllRooms, OwnerAddRoom } from './pages/owner';
 import { UserLayout, UserDashboard, UserBookings, UserProfile } from './pages/user';
 import { Provider } from 'react-redux';
 import { store, persistor } from './app/store.js';
 import { PersistGate } from 'redux-persist/integration/react';
+import {Protected} from './components';
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
@@ -23,16 +24,16 @@ createRoot(document.getElementById('root')).render(
                             <Route element={<About />} path='/about' />
                             <Route element={<Contact />} path='/contact' />
                             <Route element={<Privacy />} path='/privacy' />
+                            <Route element={<ResetPassword />} path='/reset-password' />
                             <Route element={<OwnerLayout />} path='/owner'>
-                                <Route element={<OwnerDashboard />} path='/owner/dashboard' index />
-                                <Route element={<OwnerAllRooms />} path='/owner/all-rooms' />
-                                <Route element={<OwnerAddRoom />} path='/owner/add-room' />
+                                <Route element={<Protected authetication={true}><OwnerDashboard /></Protected>} path='/owner/dashboard' index />
+                                <Route element={<Protected authetication={true}><OwnerAllRooms /></Protected>} path='/owner/all-rooms' />
+                                <Route element={<Protected authetication={true}><OwnerAddRoom /></Protected>} path='/owner/add-room' />
                             </Route>
                             <Route element={<UserLayout />} path='/user'>
-                                <Route element={<UserDashboard />} path='/user/dashboard' />
-                                <Route element={<UserDashboard />} path='/user/dashboard' />
-                                <Route element={<UserBookings />} path='/user/my-bookings' />
-                                <Route element={<UserProfile />} path='/user/profile' />
+                                <Route element={<Protected authetication={true}><UserDashboard /></Protected>} path='/user/dashboard' />
+                                <Route element={<Protected authetication={true}><UserBookings /></Protected>} path='/user/my-bookings' />
+                                <Route element={<Protected authetication={true}><UserProfile /></Protected>} path='/user/profile' />
                             </Route>
                         </Route>
                     </Routes>

@@ -4,6 +4,7 @@ import Room from "./Room";
 import About from "./About";
 import Contact from "./Contact";
 import Privacy from "./Privacy";
+import ResetPassword from "./ResetPassword";
 
 export {
     Home,
@@ -12,4 +13,5 @@ export {
     About,
     Contact,
     Privacy,
+    ResetPassword,
 }

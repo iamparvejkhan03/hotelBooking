@@ -24,7 +24,7 @@ function UserBookings(){
                         <div>
                             {
                                 userBookingsDummyData.map(booking => (
-                                    <div className="grid md:grid-cols-[1fr_150px_100px] lg:grid-cols-[1fr_250px_100px] gap-5 items-center py-5">
+                                    <div key={booking._id} className="grid md:grid-cols-[1fr_150px_100px] lg:grid-cols-[1fr_250px_100px] gap-5 items-center py-5">
                                         <Link to={`/room/${booking.room._id}`} className="grid grid-cols-1 md:grid-cols-[100px_1fr] lg:grid-cols-[150px_1fr] gap-5 items-center">
                                             <img src={booking.room.images[0]} alt="room image" className="rounded-md " />
 
@@ -49,7 +49,7 @@ function UserBookings(){
                                         </div>
 
                                         <div>
-                                            <p className={`flex  items-center gap-1 ${booking.isPaid ? 'text-green-600' : 'text-red-600'}`}><div className={`h-2 w-2 ${booking.isPaid ? 'bg-green-600' : 'bg-red-600'} rounded-full`}></div> <span>{booking.isPaid ? 'Paid' : 'Unpaid'}</span></p>
+                                            <p className={`flex  items-center gap-1 ${booking.isPaid ? 'text-green-600' : 'text-red-600'}`}><span className={`h-2 w-2 ${booking.isPaid ? 'bg-green-600' : 'bg-red-600'} rounded-full`}></span> <span>{booking.isPaid ? 'Paid' : 'Unpaid'}</span></p>
                                         </div>
                                     </div>
                                 ))

@@ -2,6 +2,8 @@ import User from "../models/user.model.js";
 import ApiErrorHandler from "../utils/apiErrorHandler.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
+import sendMail from "../utils/nodemailer.js";
 
 const registerUser = async (req, res) => {
     try {
@@ -87,6 +89,13 @@ const updateUserProfile = async (req, res) => {
     try{
         const user = req.user;
         const { fullName, email, phone, password } = req.body;
+        const image = req.file;
+
+        const image_url = await uploadOnCloudinary(image?.path);
+
+        if(!image_url){
+            return res.status(500).json(new ApiErrorHandler(false, 'Image upload failed', 500));
+        }
 
         if(!fullName || !email, !phone, !password){
             res.status(400).json(new ApiErrorHandler(false, 'All fields are required.', 400));
@@ -96,6 +105,7 @@ const updateUserProfile = async (req, res) => {
         user.email = email;
         user.phone = phone;
         user.password = password;
+        user.image = image_url.secure_url;
 
         await user.save({validateBeforeSave:false});
 
@@ -107,4 +117,94 @@ const updateUserProfile = async (req, res) => {
     }
 }
 
-export { registerUser, loginUser, logoutUser, updateUserProfile, }
+const deleteUserProfile = async (req, res) => {
+    try {
+        const user = req.user;
+
+        const deletedUser = await User.deleteOne({_id:user._id});
+
+        if(!deletedUser){
+            res.status(500).json(new ApiErrorHandler(false, 'User deletion failed', 500));
+        }
+
+        if(user?.image){
+            await deleteFromCloudinary(user.image);
+        }
+
+        res.status(200).json({success:true, message:'User deleted', status:200, data:deletedUser});
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+const resetUserPassword = async (req, res) => {
+    try {
+        const { id } = req.query;
+
+        const { newPassword } = req.body;
+
+        const user = await User.findById(id);
+
+        const isPasswordSame = await bcrypt.compare(newPassword, user.password);
+
+        if(!isPasswordSame){
+            res.status(400).json(new ApiErrorHandler(false, 'Password matched old one', 400));
+            return;
+        }
+
+        user.password = newPassword;
+        await user.save({validateBeforeSave:false});
+
+        res.status(200).json({success:true, message:'Password updated', user});
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+const forgotUserPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if(!email){
+            res.status(400).json(new ApiErrorHandler(false, 'Email not found', 400));
+        }
+
+        const user = await User.findOne({email});
+
+        if(!user){
+            return res.status(404).json(new ApiErrorHandler(false, 'No user found with this email', 404));
+        }
+
+        const mailSent = await sendMail(email, 'Password reset request', `<p>Please click on the following link to reset your password: <br /> <a href='${process.env.FRONTEND_URL}/reset-password?id=${user._id}'><strong>Click here to reset</strong></a></p>`);
+
+        if(!mailSent){
+            return res.status(500).json(new ApiErrorHandler(false, 'Some error occured while sending the email', 500));
+        }
+
+        return res.status(200).json({success:true, message:'Reset link sent on email'});
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+const getUser = async (req, res) => {
+    try {
+        const { id } = req.query;
+
+        if(!id){
+            res.status(400).json(new ApiErrorHandler(false, 'Invalid reset link', 400));
+        }
+
+        const user = await User.findById(id);
+
+        if(!user){
+            res.status(404).json(new ApiErrorHandler(false, 'No user found', 404));
+        }
+
+        res.status(200).json({success:true, message:'User found', user});
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+export { registerUser, loginUser, logoutUser, updateUserProfile, deleteUserProfile, resetUserPassword, forgotUserPassword, getUser, }

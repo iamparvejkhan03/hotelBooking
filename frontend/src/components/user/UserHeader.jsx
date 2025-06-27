@@ -1,6 +1,6 @@
 import { assets } from "../../assets/assets";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignOut, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faSignOut, faUser, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,7 +37,13 @@ function UserHeader(){
             </Link>
             
             <div className="relative w-full">
-                <FontAwesomeIcon icon={faUser} className="text-xl text-black p-2 cursor-pointer hover:text-gray-600 transition-colors duration-200 float-end" onClick={() => setShowUserMenu(!showUserMenu)} />
+                {
+                    !user.image
+                    ?
+                    (<FontAwesomeIcon icon={faUserCircle} className="text-3xl text-black p-2 cursor-pointer hover:text-gray-600 transition-colors duration-200 float-end" onClick={() => setShowUserMenu(!showUserMenu)} />)
+                    :
+                    (<img src={user.image} alt="userImg" className="h-10 w-10 object-cover rounded-full float-end border-2 border-blue-200 cursor-pointer" onClick={() => setShowUserMenu(!showUserMenu)} />)
+                }
 
                 <div className={`${!showUserMenu && 'hidden'} absolute right-0 top-full bg-white border-2 border-blue-100 rounded drop-shadow-md drop-shadow-blue-200`} onClick={() => setShowUserMenu(!showUserMenu)}>
                     <ul className="py-4">

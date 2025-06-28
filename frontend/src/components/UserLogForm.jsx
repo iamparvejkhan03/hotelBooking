@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Input } from "./";
+import { Input, SocialAuthButton, GoogleOAuth } from "./";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -53,15 +53,9 @@ function UserLogForm({isLoginActive, setIsLoginActive, isForgotPasswordActive, s
 
                 <br />
 
-                <button className="w-full bg-blue-50 border-2 border-blue-100 py-2 rounded cursor-pointer my-2 font-light" type="submit">
-                    <img src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/googleFavicon.png" alt="google logo" className="h-5 inline mx-2 align-middle" />
-                    <span className="align-middle">Login with Google</span>
-                </button>
+                <SocialAuthButton icon="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/googleFavicon.png" name="Login with Google" className="bg-blue-50 border-2 border-blue-100" link={GoogleOAuth()} />
 
-                <button className="w-full bg-black border-2 border-black text-white py-2 rounded cursor-pointer my-2 font-light" type="submit">
-                    <img src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/appleLogo.png" alt="google logo" className="h-5 inline mx-2 align-middle" />
-                    <span className="align-middle">Login with Apple</span>
-                </button>
+                <SocialAuthButton icon="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/appleLogo.png" name="Login with Apple" className="bg-black border-2 border-black text-white" />
             </form>
         </section>
     );

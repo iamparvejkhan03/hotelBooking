@@ -17,12 +17,10 @@ const userSchema = new Schema({
     },
     phone: {
         type: String,
-        required:true,
         trim:true
     },
     password: {
         type: String,
-        required: true,
         trim:true
     },
     image: {
@@ -34,6 +32,9 @@ const userSchema = new Schema({
         type: String,
         trim:true
     },
+    socialAuth: {
+        type: Boolean,
+    }
 }, {timestamps:true})
 
 userSchema.methods.generateAccessToken = async function() {

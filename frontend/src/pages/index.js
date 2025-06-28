@@ -5,6 +5,7 @@ import About from "./About";
 import Contact from "./Contact";
 import Privacy from "./Privacy";
 import ResetPassword from "./ResetPassword";
+import GoogleOAuth from "./GoogleOAuth";
 
 export {
     Home,
@@ -14,4 +15,5 @@ export {
     Contact,
     Privacy,
     ResetPassword,
+    GoogleOAuth,
 }

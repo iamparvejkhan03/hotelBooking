@@ -4,22 +4,33 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
 import sendMail from "../utils/nodemailer.js";
+import axios from "axios";
+import PasswordGenerator from "../utils/PasswordGenerator.js";
 
 const registerUser = async (req, res) => {
     try {
-        const { fullName, email, phone, password } = req.body;
+        const { fullName, email, phone, password, image, socialAuth } = req.body;
 
-        if(!fullName || !email || !phone || !password){
+        if(!fullName || !email || !password){
             res.status(400).json(new ApiErrorHandler(false, 'All fields are required.', 400));
+            return;
         }
 
-        const user = await User.create({fullName, email, phone, password});
+        const userExists = await User.findOne({email});
+
+        if(userExists){
+            res.status(400).json(new ApiErrorHandler(false, 'User already exists', 400));
+            return;
+        }
+
+        const user = await User.create({fullName, email, phone, password, image: image || '', socialAuth:socialAuth || false});
 
         if(user){
             await loginUser(req, res);
             // res.json({success:true, message:'User created', data:user});
         }else{
             res.json({success:false, message:'Some error occured while creating the user.'});
+            return;
         }
     } catch (error) {
         throw new Error(error.message);
@@ -42,10 +53,15 @@ const loginUser = async (req, res) => {
             return;
         }
 
-        const passwordMatched = await bcrypt.compare(password, user.password);
+        const passwordMatched = await bcrypt.compare(password, user.password) || password === user.password;
 
-        if(!passwordMatched){
+        if(!passwordMatched && !user.socialAuth){
             res.status(401).json(new ApiErrorHandler(false, 'Wrong password', 401));
+            return;
+        }
+
+        if(user.socialAuth && !passwordMatched){
+            res.status(400).json(new ApiErrorHandler(false, 'You registered with social login', 400));
             return;
         }
 
@@ -98,7 +114,7 @@ const updateUserProfile = async (req, res) => {
         }
 
         if(!fullName || !email, !phone, !password){
-            res.status(400).json(new ApiErrorHandler(false, 'All fields are required.', 400));
+            return res.status(400).json(new ApiErrorHandler(false, 'All fields are required.', 400));
         }
 
         user.fullName = fullName;
@@ -125,6 +141,7 @@ const deleteUserProfile = async (req, res) => {
 
         if(!deletedUser){
             res.status(500).json(new ApiErrorHandler(false, 'User deletion failed', 500));
+            return;
         }
 
         if(user?.image){
@@ -166,7 +183,7 @@ const forgotUserPassword = async (req, res) => {
         const { email } = req.body;
 
         if(!email){
-            res.status(400).json(new ApiErrorHandler(false, 'Email not found', 400));
+            return res.status(400).json(new ApiErrorHandler(false, 'Email not found', 400));
         }
 
         const user = await User.findOne({email});
@@ -192,13 +209,13 @@ const getUser = async (req, res) => {
         const { id } = req.query;
 
         if(!id){
-            res.status(400).json(new ApiErrorHandler(false, 'Invalid reset link', 400));
+            return res.status(400).json(new ApiErrorHandler(false, 'Invalid reset link', 400));
         }
 
         const user = await User.findById(id);
 
         if(!user){
-            res.status(404).json(new ApiErrorHandler(false, 'No user found', 404));
+            return res.status(404).json(new ApiErrorHandler(false, 'No user found', 404));
         }
 
         res.status(200).json({success:true, message:'User found', user});
@@ -207,4 +224,37 @@ const getUser = async (req, res) => {
     }
 }
 
-export { registerUser, loginUser, logoutUser, updateUserProfile, deleteUserProfile, resetUserPassword, forgotUserPassword, getUser, }
+const googleRegistration = async (req, res) => {
+    try {
+        const { google_access_token } = req.body;
+
+        if(!google_access_token){
+            res.status(400).json(new ApiErrorHandler(false, 'Google access token not found', 400));
+            return;
+        }
+
+        const { data } = await axios.get('https://www.googleapis.com/oauth2/v1/userinfo?alt=json', {headers: {Authorization: `Bearer ${google_access_token}`}});
+
+        if(data){
+            const user = await User.findOne({email: data.email});
+            
+            if(user){
+                const req = {
+                    body: {email:user.email, password:user.password}
+                }
+                const login = await loginUser(req, res);
+                return;
+            }
+
+            const password = PasswordGenerator();
+            const req = {
+                body: {fullName:data.name, email:data.email, phone: data.phone || '', password, image: data.picture || '', socialAuth:true}
+            }
+            const register = await registerUser(req, res);
+        }
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+export { registerUser, loginUser, logoutUser, updateUserProfile, deleteUserProfile, resetUserPassword, forgotUserPassword, getUser, googleRegistration, }

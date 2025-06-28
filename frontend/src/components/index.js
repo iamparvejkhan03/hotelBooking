@@ -23,6 +23,8 @@ import UserAuth from "./UserAuth";
 import ForgotPasswordForm from "./ForgotPasswordForm";
 import Protected from "./protected";
 import DeleteModalDialogue from "./DeleteModalDialogue";
+import SocialAuthButton from "./SocialAuthButton";
+import GoogleOAuth from "./GoogleOAuth";
 
 export {
     Header, 
@@ -50,4 +52,6 @@ export {
     ForgotPasswordForm,
     Protected,
     DeleteModalDialogue,
+    SocialAuthButton,
+    GoogleOAuth,
 }

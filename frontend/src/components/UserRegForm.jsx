@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Input } from "./";
+import { GoogleOAuth, Input, SocialAuthButton } from "./";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { toggleIsUserLoggedIn, toggleShowUserAuthForm, updateUser } from "../features/forms/UserAuthSlice";
@@ -31,6 +31,7 @@ function UserRegForm({isLoginActive, setIsLoginActive}){
             }
         } catch (error) {
             console.error(error.message);
+            toast.error(error.response.data.message);
         }
     }
 
@@ -43,7 +44,7 @@ function UserRegForm({isLoginActive, setIsLoginActive}){
 
                 <Input type="email" placeholder="E-mail" className="focus-within:outline-2 focus-within:outline-blue-300" {...register('email', {required:true})} />
 
-                <Input type="tel" placeholder="Phone No." className="focus-within:outline-2 focus-within:outline-blue-300" {...register('phone', {required:true})} />
+                <Input type="tel" placeholder="Phone No." className="focus-within:outline-2 focus-within:outline-blue-300" {...register('phone', {required:false})} />
 
                 <Input type="password" placeholder="Password" className="focus-within:outline-2 focus-within:outline-blue-300" {...register('password', {required:true})} />
 
@@ -53,15 +54,9 @@ function UserRegForm({isLoginActive, setIsLoginActive}){
 
                 <br />
 
-                <button className="w-full bg-blue-50 border-2 border-blue-100 py-2 rounded cursor-pointer my-2 font-light" type="submit">
-                    <img src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/googleFavicon.png" alt="google logo" className="h-5 inline mx-2 align-middle" />
-                    <span className="align-middle">Login with Google</span>
-                </button>
+                <SocialAuthButton icon="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/googleFavicon.png" name="Register with Google" className="bg-blue-50 border-2 border-blue-100" link={GoogleOAuth()} />
 
-                <button className="w-full bg-black border-2 border-black text-white py-2 rounded cursor-pointer my-2 font-light" type="submit">
-                    <img src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/appleLogo.png" alt="google logo" className="h-5 inline mx-2 align-middle" />
-                    <span className="align-middle">Login with Apple</span>
-                </button>
+                <SocialAuthButton icon="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/appleLogo.png" name="Register with Apple" className="bg-black border-2 border-black text-white" />
             </form>
         </section>
     );

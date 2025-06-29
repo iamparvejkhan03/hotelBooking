@@ -3,8 +3,12 @@ import { assets } from "../assets/assets";
 import {Input} from "./";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { toggleShowHotelRegForm } from "../features/forms/HotelRegSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleShowHotelRegForm, updateHotel } from "../features/forms/HotelRegSlice.js";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toggleIsHotelOwner, updateUser } from "../features/forms/UserAuthSlice.js";
 
 function HotelRegForm(){
     const {register, handleSubmit} = useForm({
@@ -16,11 +20,31 @@ function HotelRegForm(){
         }
     });
 
-    const hotelRegisterHandler = (data) => {
-        console.log(data);
-    }
+    const user = useSelector(state => state.user.user);
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const hotelRegisterHandler = async (formData) => {
+
+        try {
+            const accessToken = user.accessToken;
+
+            const { data } = await axios.post('/api/v1/hotels/register', {name:formData.name, phone:formData.phone, address:formData.address, city:formData.city}, {headers: {Authorization: `Bearer ${accessToken}`}});
+
+            if(data){
+                dispatch(updateUser({...data.owner, accessToken}));
+                dispatch(toggleShowHotelRegForm(false));
+                dispatch(updateHotel(data.hotel));
+                dispatch(toggleIsHotelOwner(true));
+                toast.success(data.message);
+                navigate('/owner/dashboard');
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(error?.response?.data?.message);
+        }
+    }
 
     return (
         <section className="fixed top-0 left-0 right-0 bottom-0 bg-black/70 z-50 flex items-center justify-center">
@@ -41,11 +65,11 @@ function HotelRegForm(){
                         <label className="text-gray-600">City</label>
                         <select className="text-black border-2 border-gray-200 py-1.5 px-2 rounded my-1 w-full focus:outline-2 focus:outline-blue-300" {...register('city', {required:true})}>
                             <option value="select">Select City</option>
-                            <option value="delhi">Delhi</option>
-                            <option value="mumbai">Mumbai</option>
-                            <option value="chennai">Chennai</option>
-                            <option value="banglore">Banglore</option>
-                            <option value="kolkata">Kolkata</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Mumbai">Mumbai</option>
+                            <option value="Chennai">Chennai</option>
+                            <option value="Banglore">Banglore</option>
+                            <option value="Kolkata">Kolkata</option>
                         </select>
                     </div>
 

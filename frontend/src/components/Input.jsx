@@ -7,7 +7,7 @@ const Input = forwardRef(function Input({label, labelIcon, type="text", classNam
     return (
         <div className="text-gray-600 grid grid-cols-1 my-1">
             {label && <label htmlFor={id}>{labelIcon && <FontAwesomeIcon icon={labelIcon} />} {label}</label>}
-            <input type={type} list={list} id={id} className={`text-black border-2 border-blue-100 py-1 px-2 rounded my-1 ${className}`} ref={ref} {...props} />
+            <input type={type} list={list} id={id} className={`text-black border-2 border-blue-100 py-1 px-2 focus-within:outline-2 focus-within:outline-blue-200 rounded my-1 ${className}`} ref={ref} {...props} />
         </div>
     );
 })

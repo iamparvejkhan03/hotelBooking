@@ -25,6 +25,7 @@ import Protected from "./protected";
 import DeleteModalDialogue from "./DeleteModalDialogue";
 import SocialAuthButton from "./SocialAuthButton";
 import GoogleOAuth from "./GoogleOAuth";
+import UserMenuIcon from "./UserMenuIcon";
 
 export {
     Header, 
@@ -54,4 +55,5 @@ export {
     DeleteModalDialogue,
     SocialAuthButton,
     GoogleOAuth,
+    UserMenuIcon,
 }

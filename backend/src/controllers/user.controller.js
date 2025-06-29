@@ -6,6 +6,7 @@ import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js
 import sendMail from "../utils/nodemailer.js";
 import axios from "axios";
 import PasswordGenerator from "../utils/PasswordGenerator.js";
+import Hotel from "../models/hotel.model.js";
 
 const registerUser = async (req, res) => {
     try {
@@ -67,7 +68,15 @@ const loginUser = async (req, res) => {
 
         const { accessToken } = await generateAccessAndRefreshTokens(user);
 
-        res.status(200).cookie('accessToken', accessToken).json({success:true, message:'Logged in', data:{user, accessToken}});
+        let hotel;
+        if(user.isHotelOwner){
+            hotel = await Hotel.findOne({owner:user._id});
+            if(!hotel){
+                return res.status(404).json(new ApiErrorHandler(false, 'No hotel found', 404));
+            }
+        }
+
+        res.status(200).cookie('accessToken', accessToken).json({success:true, message:'Logged in', data:{user, accessToken}, hotel: hotel || null});
 
         return user;
     }catch(error){

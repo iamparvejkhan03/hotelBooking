@@ -1,11 +1,24 @@
 import { useForm } from "react-hook-form";
 import { assets } from "../../assets/assets";
 import { OwnerContainer, OwnerSidebar, Heading } from "../../components";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { updateRoom } from "../../features/RoomSlice";
 
 const amenities = ['Free WiFi', 'Free Breakfast', 'Room Service', 'Mountain View', 'Pool Access'];
 
 function OwnerAddRoom(){
-    const {register, handleSubmit, getValues, setValue, watch} = useForm({
+    const accessToken = useSelector(state => state.user.user.accessToken);
+
+    const [creating, setCreating] = useState(false);
+
+    const room = useSelector(state => state.room.room);
+    console.log(room);
+
+    const {register, handleSubmit, watch} = useForm({
         defaultValues:{
             images:{
                 img1:null,
@@ -19,8 +32,35 @@ function OwnerAddRoom(){
         }
     });
 
-    const handleAddRoom = (data) => {
-        console.log(data);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const handleAddRoom = async (roomData) => {
+        try {
+            setCreating(true);
+            const formData = new FormData();
+            Object.values(roomData.images).forEach(img => {
+                formData.append('images', img[0]);
+            })
+            formData.append('type', roomData.type);
+            formData.append('price', roomData.price);
+            roomData.amenities.map(amenity => {
+                formData.append('amenities', amenity);
+            })
+
+            const { data } = await axios.post('/api/v1/rooms/register', formData, {headers: {Authorization: `Bearer ${accessToken}`}});
+
+            if(data.success){
+                setCreating(false);
+                console.log(data);
+                toast.success(data.message);
+                dispatch(updateRoom(data.room));
+                navigate('/owner/all-rooms');
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(error.response.data.message);
+        }
     }
 
     const images = watch('images');
@@ -41,9 +81,9 @@ function OwnerAddRoom(){
                             {
                                 Object.keys(images).map((img, i) => (
                                     <label key={i}>
-                                        <input type="file" className="sr-only" name="images" onChange={(e) => setValue(`images.${img}`, e.target.files?.[0])} />
+                                        <input type="file" className="sr-only" {...register(`images.${img}`, {required:true})} />
 
-                                        <img src={(images[img] instanceof File) ? URL.createObjectURL(images[img]) : assets.uploadArea} alt="Upload Area" className="h-28 sm:h-20 object-cover cursor-pointer rounded-md" />
+                                        <img src={(images[img] instanceof FileList) ? URL.createObjectURL(images[img][0]) : assets.uploadArea} alt="Upload Area" className="max-w-40 object-cover cursor-pointer rounded-md" />
                                     </label>
                                 ))
                             }
@@ -71,7 +111,7 @@ function OwnerAddRoom(){
                                 {
                                     amenities.map((amenity, i) => (
                                         <label key={i} className="flex gap-1">
-                                            <input type="checkbox" name="amenities" {...register('amenities', {required:true})} />
+                                            <input type="checkbox" value={amenity} {...register('amenities', {required:true})} />
                                             <span>{amenity}</span>
                                         </label>
                                     ))
@@ -79,7 +119,7 @@ function OwnerAddRoom(){
                             </div>
                         </div>
 
-                        <button type="submit" className="py-2 px-6 rounded bg-blue-500 text-white cursor-pointer active:bg-blue-600/90">Add Room</button>
+                        <button type="submit" className="py-2 px-6 rounded bg-blue-500 text-white cursor-pointer active:bg-blue-600/90">{creating ? 'Creating...' : 'Add Room'}</button>
                     </form>
                 </div>
             </OwnerContainer>

@@ -3,8 +3,9 @@ import { Input, SocialAuthButton, GoogleOAuth } from "./";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { toggleIsUserLoggedIn, toggleShowUserAuthForm, updateUser } from "../features/forms/UserAuthSlice";
+import { toggleIsHotelOwner, toggleIsUserLoggedIn, toggleShowUserAuthForm, updateUser } from "../features/forms/UserAuthSlice";
 import toast from "react-hot-toast";
+import { updateHotel } from "../features/forms/HotelRegSlice";
 
 function UserLogForm({isLoginActive, setIsLoginActive, isForgotPasswordActive, setIsForgotPasswordActive}){
 
@@ -24,6 +25,10 @@ function UserLogForm({isLoginActive, setIsLoginActive, isForgotPasswordActive, s
                 const accessToken = data.data.accessToken;
                 dispatch(toggleIsUserLoggedIn(true));
                 dispatch(toggleShowUserAuthForm(false));
+                if(data.hotel){
+                    dispatch(updateHotel(data.hotel));
+                    dispatch(toggleIsHotelOwner(true));
+                }
                 dispatch(updateUser({...data.data.user, accessToken}));
                 toast.success(data.message);
                 navigate('/user/dashboard');

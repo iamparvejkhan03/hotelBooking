@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     showHotelRegForm:false,
+    hotel: {}
 }
 
 const HotelRegSlice = createSlice({
@@ -10,10 +11,13 @@ const HotelRegSlice = createSlice({
     reducers: {
         toggleShowHotelRegForm: (state, action) => {
             state.showHotelRegForm = action.payload;
+        },
+        updateHotel: (state, action) => {
+            state.hotel = action.payload;
         }
     }
 });
 
 export const HotelRegReducers = HotelRegSlice.reducer;
 
-export const { toggleShowHotelRegForm } = HotelRegSlice.actions;
+export const { toggleShowHotelRegForm, updateHotel } = HotelRegSlice.actions;

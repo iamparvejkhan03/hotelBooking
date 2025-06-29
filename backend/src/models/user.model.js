@@ -34,6 +34,10 @@ const userSchema = new Schema({
     },
     socialAuth: {
         type: Boolean,
+    },
+    isHotelOwner: {
+        type: Boolean,
+        default:false
     }
 }, {timestamps:true})
 

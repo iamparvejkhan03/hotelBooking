@@ -1,12 +1,14 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { UserAuthFormReducers } from "../features/forms/UserAuthSlice";
-import { HotelRegReducers } from "../features/forms/HotelRegSlice";
+import { UserAuthFormReducers } from "../features/forms/UserAuthSlice.js";
+import { HotelRegReducers } from "../features/forms/HotelRegSlice.js";
+import { RoomReducers } from "../features/RoomSlice.js";
 import storage from "redux-persist/lib/storage";
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 
 const combinedReducers = combineReducers({
     user: UserAuthFormReducers,
-    hotel: HotelRegReducers
+    hotel: HotelRegReducers,
+    room: RoomReducers,
 })
 
 const persistConfig = {

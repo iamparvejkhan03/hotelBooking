@@ -3,8 +3,9 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { toggleIsUserLoggedIn, toggleShowUserAuthForm, updateUser } from "../features/forms/UserAuthSlice";
+import { toggleIsHotelOwner, toggleIsUserLoggedIn, toggleShowUserAuthForm, updateUser } from "../features/forms/UserAuthSlice";
 import { useNavigate } from "react-router-dom";
+import { updateHotel } from "../features/forms/HotelRegSlice";
 
 function GoogleOAuth() {
     const location = useLocation();
@@ -24,6 +25,10 @@ function GoogleOAuth() {
                     dispatch(updateUser({ ...data.data.user, accessToken }));
                     dispatch(toggleIsUserLoggedIn(true));
                     dispatch(toggleShowUserAuthForm(false));
+                    if(data.hotel){
+                        dispatch(updateHotel(data.hotel));
+                        dispatch(toggleIsHotelOwner(true));
+                    }
                     toast.success(data.message);
                     navigate('/user/dashboard');
                 }

@@ -5,19 +5,37 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot, faUser, faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 function Room(){
     const {id} = useParams();
     const [mainImg, setMainImg] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [room, setRoom] = useState(null);
 
     useEffect(() => {
-        setRoom(roomsDummyData.find(roomData => roomData._id === id));
-        room && setMainImg(room.images[0]);
-    }, [id, room])
+        const fetchRoom = async () => {
+            try {
+                setIsLoading(true);
+                const { data } = await axios.get(`/api/v1/rooms/${id}`);
 
-    const {register, handleSubmit, formState: {errors}, getValues, setValue} = useForm({
+                if(data){
+                    setIsLoading(false);
+                    setRoom(data?.room);
+                    setMainImg(data?.room?.images[0]);
+                }
+            } catch (error) {
+                console.error(error);
+                toast.error(error?.response?.data?.message);
+            }
+        }
+
+        fetchRoom();
+    }, [id])
+
+    const { register, handleSubmit, formState: {errors} } = useForm({
         defaultValues: {
             checkIn:"",
             checkOut:"",
@@ -32,34 +50,36 @@ function Room(){
     return (
         <>
             {
-                room && (
+                room 
+                ?
+                (
                     <Container className="mt-24 lg:mt-32">
                         <section>
                             <div className="flex gap-3 items-center">
                                 <h5 className="text-xl md:text-2xl">{room.hotel.name}</h5>
-                                <p className="text-sm">[{room.roomType}]</p>
+                                <p className="text-sm">[{room.type}]</p>
                                 <span className="text-sm bg-blue-500 py-1 px-3 rounded-full text-white">20% off</span>
                             </div>
                             <p className="flex my-2">
                                 {
                                     Array(5).fill('').map((_, i) => (
-                                        room.hotel.rating > i ? <img key={i} src={assets.starIconFilled} alt="star" /> : <img key={i} src={assets.starIconOutlined} alt="nostar" />
+                                        5 > i ? <img key={i} src={assets.starIconFilled} alt="star" /> : <img key={i} src={assets.starIconOutlined} alt="nostar" />
                                     ))
                                 }
-                                <span className="mx-3">{room.hotel.reviews}+ reviews</span>
+                                <span className="mx-3">185+ reviews</span>
                             </p>
                             <p className="text-gray-600 text-sm"><FontAwesomeIcon icon={faLocationDot} /><span className="mx-2">{room.hotel.address}, {room.hotel.city}</span></p>
                         </section>
 
                         <section className="my-5 w-full flex flex-col md:flex-row gap-8">
-                            <div className="w-full md:max-w-1/2">
-                                {mainImg && <img src={mainImg} alt="roomImg" className="rounded-xl cursor-grab hover:scale-[101%] transition duration-200 shadow-lg" />}
+                            <div className="w-full min-h-96 md:w-1/2">
+                                {mainImg && <img src={mainImg} alt="roomImg" className="rounded-xl cursor-grab hover:scale-[101%] transition duration-200 shadow-lg h-full w-full object-cover" />}
                             </div>
 
-                            <div className="w-full md:max-w-1/2 flex flex-row justify-center flex-wrap gap-3">
+                            <div className="w-full md:max-w-1/2 grid grid-cols-2 gap-3">
                                 {
                                     room.images.map((img, i) => (
-                                        <img onClick={() => setMainImg(img)} key={i} src={img} alt="roomImg" className={`w-[48%] rounded-lg cursor-pointer ${mainImg === img && 'outline-2 outline-blue-500'}`} />
+                                        <img onClick={() => setMainImg(img)} key={i} src={img} alt="roomImg" className={` rounded-lg cursor-pointer w-full h-full object-cover ${mainImg === img && 'outline-2 outline-blue-500'}`} />
                                     ))
                                 }
                             </div>
@@ -79,10 +99,8 @@ function Room(){
                                     }
                                 </div>
                             </div>
-                            <p className="text-2xl">${room.pricePerNight}/day</p>
+                            <p className="text-2xl">${room.price}/day</p>
                         </div>
-
-                        {/** flex sm:flex-row items-end w-auto flex-wrap */}
 
                         <form onSubmit={handleSubmit(handleSearchForm)} className="my-10 bg-white px-5 py-3 rounded-lg shadow-[-5px_-5px_20px_rgba(0,0,0,0.1),5px_5px_20px_rgba(0,0,0,0.1)]">
                             <div className="bg-white p-6 rounded-md grid lg:grid-cols-4 md:grid-cols-2 md:gap-3 lg:gap-5 lg:items-end">
@@ -128,9 +146,9 @@ function Room(){
 
                         <section className="my-10">
                             <div className="grid grid-cols-[50px_1fr] gap-5 lg:w-4/5">
-                                <img src={testimonials[1].image} alt="owner image" className="rounded-full" />
+                                <img src={room.hotel.owner.image} alt="owner image" className="rounded-full border-2 border-blue-200" />
                                 <div className="flex flex-col gap-2 items-start">
-                                    <h5 className="font-semibold">Hosted By {userDummyData.username}</h5>
+                                    <h5 className="font-semibold">Hosted By {room.hotel.owner.fullName}</h5>
                                     <div className="grid sm:grid-cols-2 sm:gap-2 md:grid-cols-3 md:gap-4 lg:gap-8">
                                         <span className="flex gap-0.5 items-center">
                                             {
@@ -148,6 +166,20 @@ function Room(){
                             </div>
                         </section>
                     </Container>
+                )
+                :
+                isLoading
+                ?
+                (
+                    <div className="min-h-screen w-full flex justify-center items-center mt-24 lg:mt-32">
+                        <span className="h-12 w-12 border-4 border-blue-300 rounded-full border-b-blue-600 animate-spin"></span>
+                    </div>
+                )
+                :
+                (
+                    <div className="min-h-screen w-full flex justify-center items-center mt-24 lg:mt-32 -translate-y-16">
+                        <h2 className="text-2xl font-semibold">No Room Found</h2>
+                    </div>
                 )
             }
         </>

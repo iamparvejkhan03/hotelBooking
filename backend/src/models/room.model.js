@@ -31,7 +31,8 @@ const roomSchema = new Schema({
     },
     hotel: {
         type: Schema.Types.ObjectId,
-        required:true
+        required:true,
+        ref: 'Hotel'
     }
 }, {timestamps:true});
 

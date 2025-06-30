@@ -39,7 +39,7 @@ function UserMenuIcon() {
                     ?
                     (<FontAwesomeIcon icon={faUserCircle} className="text-3xl text-black p-2 cursor-pointer hover:text-gray-600 transition-colors duration-200 float-end" onClick={() => setShowUserMenu(!showUserMenu)} />)
                     :
-                    (<img src={user.image} alt="userImg" className="h-10 w-10 object-cover rounded-full float-end border-2 border-blue-200 cursor-pointer" onClick={() => setShowUserMenu(!showUserMenu)} />)
+                    (<img src={user.image} alt="userImg" className="max-h-10 max-w-10 object-cover rounded-full float-end border-2 border-blue-200 cursor-pointer" onClick={() => setShowUserMenu(!showUserMenu)} />)
             }
 
             <div className={`${!showUserMenu && 'hidden'} absolute right-0 top-full translate-y-4 bg-white border-2 border-blue-100 rounded drop-shadow-md drop-shadow-blue-200 min-w-48`} onClick={() => setShowUserMenu(!showUserMenu)}>

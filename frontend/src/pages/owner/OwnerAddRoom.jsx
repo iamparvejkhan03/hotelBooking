@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { assets } from "../../assets/assets";
 import { OwnerContainer, OwnerSidebar, Heading } from "../../components";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,7 +16,6 @@ function OwnerAddRoom(){
     const [creating, setCreating] = useState(false);
 
     const room = useSelector(state => state.room.room);
-    console.log(room);
 
     const {register, handleSubmit, watch} = useForm({
         defaultValues:{

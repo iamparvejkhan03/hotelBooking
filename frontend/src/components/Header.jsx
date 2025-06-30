@@ -66,7 +66,7 @@ function Header(){
                         {
                             isUserLoggedIn
                             &&
-                            <li>
+                            <li className="relative mx-5">
                                 {
                                     isHotelOwner
                                     ?

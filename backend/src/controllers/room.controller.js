@@ -47,4 +47,85 @@ const registerRoom = async (req, res) => {
     }
 }
 
-export { registerRoom, }
+const getUserRooms = async (req, res) => {
+    try {
+        const user = req.user;
+
+        const hotel = await Hotel.findOne({owner:user._id});
+
+        if(!hotel){
+            return res.status(404).json(new ApiErrorHandler(false, 'No hotel found', 404));
+        }
+
+        const rooms = await Room.find({hotel:hotel._id});
+
+        if(!rooms){
+            return res.status(404).json(new ApiErrorHandler(false, 'No rooms found', 404));
+        }
+
+        return res.status(200).json({success:true, message:'Rooms fetched', rooms});
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+const getSingleRoom = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if(!id){
+            return res.status(400).json(new ApiErrorHandler(false, 'Room id not found', 400));
+        }
+
+        const room = await Room.findById(id).populate({
+            path: 'hotel',
+            populate: {
+                path: 'owner',
+                select: '_id email fullName phone image'
+            }
+        });
+
+        if(!room){
+            return res.status(404).json(new ApiErrorHandler(false, 'No room found', 404));
+        }
+
+        return res.status(200).json({success:true, message:'Room found', room});
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+const setRoomAvailability = async (req, res) => {
+    try {
+        const user = req.user;
+        const { isAvailable, id } = req.body;
+
+        const room = await Room.findOneAndUpdate({_id:id}, {isAvailable}, {new:true});
+
+        if(!room){
+            return res.status(500).json(new ApiErrorHandler(false, 'Room updation failed', 500));
+        }
+
+        return res.status(200).json({success:true, message:'Room availability updated', room});
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+const getAllRooms = async (req, res) => {
+    try {
+        const rooms = await Room.find().populate({
+            path: 'hotel'
+        }).sort({createdAt: -1});
+
+        if(!rooms){
+            return res.status(404).json(new ApiErrorHandler(false, 'No rooms found', 404));
+        }
+
+        return res.status(200).json({success:true, message:'Rooms fetched', rooms});
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+export { registerRoom, getUserRooms, setRoomAvailability, getSingleRoom, getAllRooms, }

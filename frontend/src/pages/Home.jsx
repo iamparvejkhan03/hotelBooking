@@ -6,6 +6,9 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Navigation, Autoplay, Pagination } from 'swiper/modules';
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { useEffect } from "react";
+import axios from "axios";
 
 function Home() {
     const { register, handleSubmit } = useForm();
@@ -13,41 +16,65 @@ function Home() {
     const subscriptionFormHandler = (data) => {
         console.log(data);
     }
+
+    const [rooms, setRooms] = useState(null);
+
+    useEffect(() => {
+        const getAllRooms = async () => {
+            try {
+                const { data } = await axios.get('/api/v1/rooms');
+
+                if (data.success) {
+                    setRooms(data.rooms);
+                }
+            } catch (error) {
+                console.error(error);
+                toast.error(error?.response?.data?.message);
+            }
+        }
+        getAllRooms();
+    }, [])
     return (
         <>
             <Hero />
 
             <TrustedBy />
 
-            <section className="bg-blue-100">
-                <Container>
-                    <Heading heading="Featured Destination" subHeading="Discover our handpicked selection of exceptional properties around the world, offering unparalleled luxury and unforgotable experience." />
+            {
+                (rooms && rooms.length > 0)
+                &&
+                (
+                    <section className="bg-blue-100">
+                        <Container>
+                            <Heading heading="Featured Destination" subHeading="Discover our handpicked selection of exceptional properties around the world, offering unparalleled luxury and unforgotable experience." />
 
-                    <Swiper
-                        modules={[Navigation, Autoplay]}
-                        spaceBetween={50}
-                        slidesPerView={4}
-                        navigation
-                        pagination={{ clickable: true }}
-                        className="mt-5"
-                        autoplay={{ delay: 3000 }}
-                        breakpoints={{
-                            0: { slidesPerView: 1 },
-                            799: { slidesPerView: 2 },
-                            1099: { slidesPerView: 3 },
-                            1299: { slidesPerView: 4 },
-                        }}
-                    >
-                        {
-                            roomsDummyData.map(room => (
-                                <SwiperSlide>
-                                    <HotelCard key={room._id} room={room} />
-                                </SwiperSlide>
-                            ))
-                        }
-                    </Swiper>
-                </Container>
-            </section>
+                            <Swiper
+                                modules={[Navigation, Autoplay]}
+                                spaceBetween={50}
+                                slidesPerView={4}
+                                navigation
+                                pagination={{ clickable: true }}
+                                className="mt-5"
+                                autoplay={{ delay: 3000 }}
+                                breakpoints={{
+                                    0: { slidesPerView: 1 },
+                                    799: { slidesPerView: 2 },
+                                    1099: { slidesPerView: 3 },
+                                    1299: { slidesPerView: 4 },
+                                }}
+                            >
+                                {
+                                    rooms.slice(0, 10).map((room) => (
+                                        <SwiperSlide>
+                                            <HotelCard key={room._id} room={room} />
+                                        </SwiperSlide>
+                                    ))
+                                }
+                            </Swiper>
+                        </Container>
+                    </section>
+                )
+            }
 
             <section>
                 <Container>

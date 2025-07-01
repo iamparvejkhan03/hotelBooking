@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const sendMail = async (to, subject, html) => {
+const sendMail = async (to, subject, html, name) => {
     try {
         return await transporter.sendMail({
             from: `"InstaStay" <${process.env.SENDER_EMAIL}>`,

@@ -4,7 +4,7 @@ import './index.css';
 import App from './App.jsx';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { About, Contact, GoogleOAuth, Home, Privacy, ResetPassword, Room, Rooms } from './pages';
-import { OwnerDashboard, OwnerLayout, OwnerAllRooms, OwnerAddRoom, OwnerHotel } from './pages/owner';
+import { OwnerDashboard, OwnerLayout, OwnerAllRooms, OwnerAddRoom, OwnerHotel, OwnerEditRoom } from './pages/owner';
 import { UserLayout, UserDashboard, UserBookings, UserProfile } from './pages/user';
 import { Provider } from 'react-redux';
 import { store, persistor } from './app/store.js';
@@ -30,6 +30,7 @@ createRoot(document.getElementById('root')).render(
                                 <Route element={<Protected authetication={true}><OwnerDashboard /></Protected>} path='/owner/dashboard' index />
                                 <Route element={<Protected authetication={true}><OwnerAllRooms /></Protected>} path='/owner/all-rooms' />
                                 <Route element={<Protected authetication={true}><OwnerAddRoom /></Protected>} path='/owner/add-room' />
+                                <Route element={<Protected authetication={true}><OwnerEditRoom /></Protected>} path='/owner/edit-room/:roomId' />
                                 <Route element={<Protected authetication={true}><OwnerHotel /></Protected>} path='/owner/hotel' />
                             </Route>
                             <Route element={<UserLayout />} path='/user'>

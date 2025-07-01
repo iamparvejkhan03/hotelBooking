@@ -9,12 +9,22 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 function Home() {
     const { register, handleSubmit } = useForm();
 
-    const subscriptionFormHandler = (data) => {
-        console.log(data);
+    const subscriptionFormHandler = async (formData) => {
+        try {
+            const { data } = await axios.post('/api/v1/newsletter/subscribe', {email:formData.email});
+
+            if(data.success){
+                toast.success(data.message);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(error?.response?.data?.message);
+        }
     }
 
     const [rooms, setRooms] = useState(null);
@@ -55,7 +65,7 @@ function Home() {
                                 navigation
                                 pagination={{ clickable: true }}
                                 className="mt-5"
-                                autoplay={{ delay: 3000 }}
+                                autoplay={{ delay: 5000 }}
                                 breakpoints={{
                                     0: { slidesPerView: 1 },
                                     799: { slidesPerView: 2 },
@@ -86,7 +96,7 @@ function Home() {
                         spaceBetween={50}
                         slidesPerView={1}
                         pagination={{ clickable: true }}
-                        autoplay={{ delay: 3000 }}
+                        autoplay={{ delay: 5000 }}
                         breakpoints={{
                             0: { slidesPerView: 1 },
                             799: { slidesPerView: 2 },
@@ -192,7 +202,7 @@ function Home() {
 
                         <form onSubmit={handleSubmit(subscriptionFormHandler)} className="flex flex-col sm:flex-row sm:justify-center sm:gap-2 my-3">
                             <Input type="email" placeholder="Enter your email..." className="py-2 text-white" {...register('email', { required: true })} />
-                            <Input type="submit" value="Subscribe" className="bg-black text-white py-2 px-5 rounded-md border-none" />
+                            <Input type="submit" value="Subscribe" className="bg-black text-white py-2 px-5 rounded-md border-none cursor-pointer" />
                         </form>
 
                         <p className="text-xs font-extralight">By subscribing, you agree to our Privacy Policy and consent to receice updates.</p>

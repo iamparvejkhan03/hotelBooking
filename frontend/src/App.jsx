@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from "react-router-dom";
-import { Header, Footer, ScrollToTop, HotelRegForm, UserAuth } from "./components";
+import { Header, Footer, ScrollToTop, HotelRegForm, UserAuth, ScrollToTopIcon } from "./components";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Toaster } from "react-hot-toast";
@@ -17,6 +17,7 @@ function App(){
             {showUserAuth && <UserAuth />}
             {(!pathname.includes('owner') && !pathname.includes('/user')) && <Header />}
             <Outlet />
+            <ScrollToTopIcon />
             <Footer />
         </main>
     );

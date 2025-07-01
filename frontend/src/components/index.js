@@ -26,6 +26,7 @@ import DeleteModalDialogue from "./DeleteModalDialogue";
 import SocialAuthButton from "./SocialAuthButton";
 import GoogleOAuth from "./GoogleOAuth";
 import UserMenuIcon from "./UserMenuIcon";
+import ScrollToTopIcon from "./ScrollToTopIcon";
 
 export {
     Header, 
@@ -56,4 +57,5 @@ export {
     SocialAuthButton,
     GoogleOAuth,
     UserMenuIcon,
+    ScrollToTopIcon,
 }

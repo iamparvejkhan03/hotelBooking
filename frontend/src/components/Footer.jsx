@@ -49,13 +49,6 @@ function Footer(){
                                     <a href="mailto:team@instastay.com">team@instastay.com</a>
                                 </p>
                             </div>
-                            <div className='flex flex-wrap items-center mt-4'>
-                                <input type="text" className='bg-white max-w-32 lg:max-w-48 rounded-l border border-gray-300 h-9 px-3 outline-none' placeholder='Your email' />
-                                <button className='flex items-center justify-center bg-black h-9 w-9 aspect-square rounded-r'>
-                                    {/* Arrow icon */}
-                                    <FontAwesomeIcon className="text-white" icon={faArrowRight} />
-                                </button>
-                            </div>
                         </div>
                     </div>
                 </div>

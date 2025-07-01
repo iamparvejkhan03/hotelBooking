@@ -1,8 +1,11 @@
 import { useForm } from "react-hook-form";
 import { Container, Heading } from "../components";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useState } from "react";
 
 function Contact() {
-    const {register, handleSubmit} = useForm({
+    const {register, handleSubmit, reset} = useForm({
         defaultValues: {
             name: '',
             email: '',
@@ -10,8 +13,27 @@ function Contact() {
         }
     });
 
-    const submitMessageForm = (data) => {
-        console.log(data);
+    const [sending, setSending] = useState(false);
+
+    const submitMessageForm = async (messageData) => {
+        try {
+            setSending(true);
+
+            const { data } = await axios.post('/api/v1/contact', {name:messageData.name, email:messageData.email, message:messageData.message});
+
+            if(data.success){
+                toast.success(data.message);
+                setSending(false);
+                reset({
+                    name: '',
+                    email: '',
+                    message: ''
+                })
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(error?.response?.data?.message);
+        }
     }
 
     return (
@@ -44,7 +66,7 @@ function Contact() {
                     <textarea rows="4" className="w-full mt-2 p-2 bg-transparent border border-slate-300 rounded-lg resize-none outline-none focus:ring-2 focus-within:ring-blue-500 transition-all" placeholder="Enter your message" {...register('message', {required:true})}></textarea>
 
                     <button type="submit" className="flex items-center justify-center gap-1 mt-5 bg-blue-500 hover:bg-blue-600 text-white py-2.5 w-full rounded-md transition cursor-pointer">
-                        Submit Form
+                        {sending ? 'Sending...' : 'Submit Form'}
                         <svg className="mt-0.5" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="m18.038 10.663-5.625 5.625a.94.94 0 0 1-1.328-1.328l4.024-4.023H3.625a.938.938 0 0 1 0-1.875h11.484l-4.022-4.025a.94.94 0 0 1 1.328-1.328l5.625 5.625a.935.935 0 0 1-.002 1.33" fill="#fff" />
                         </svg>

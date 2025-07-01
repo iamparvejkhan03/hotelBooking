@@ -11,7 +11,7 @@ function HotelCard({room}){
                     <div className="flex justify-between">
                         <div>
                             <h5 className="text-lg">{room.hotel.name}</h5>
-                            <p className="text-sm"><FontAwesomeIcon icon={faLocationDot} /> {room.hotel.address}</p>
+                            <p className="text-sm w-48 truncate"><FontAwesomeIcon icon={faLocationDot} /> {room.hotel.address}</p>
                         </div>
                         <p><FontAwesomeIcon className="text-yellow-600" icon={faStar} /> 4.5</p>
                     </div>

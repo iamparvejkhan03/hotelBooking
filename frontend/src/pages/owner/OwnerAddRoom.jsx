@@ -15,8 +15,6 @@ function OwnerAddRoom(){
 
     const [creating, setCreating] = useState(false);
 
-    const room = useSelector(state => state.room.room);
-
     const {register, handleSubmit, watch} = useForm({
         defaultValues:{
             images:{
@@ -51,7 +49,6 @@ function OwnerAddRoom(){
 
             if(data.success){
                 setCreating(false);
-                console.log(data);
                 toast.success(data.message);
                 dispatch(updateRoom(data.room));
                 navigate('/owner/all-rooms');

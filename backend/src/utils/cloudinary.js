@@ -8,13 +8,13 @@ cloudinary.config({
     api_secret:process.env.CLOUDINARY_API_SECRET
 })
 
-const uploadOnCloudinary = async (img) => {
+const uploadOnCloudinary = async (image) => {
     try {
-        return await cloudinary.uploader.upload(img, (error, result) => {
+        return await cloudinary.uploader.upload(image, (error, result) => {
             if(error){
                 throw new Error(error);
             }
-            fs.unlinkSync(img);
+            fs.unlinkSync(image);
             return result;
         })
     } catch (error) {
@@ -22,13 +22,25 @@ const uploadOnCloudinary = async (img) => {
     }
 }
 
-const deleteFromCloudinary = async (img) => {
+const deleteFromCloudinary = async (image) => {
     try {
-        const public_id = img.split('/')[img.split('/').length -1].split('.')[0];
-        const deletedImage = await cloudinary.uploader.destroy(public_id, {resource_type:'image'});
+        if(image instanceof String){
+            const public_id = image.split('/')[image.split('/').length -1].split('.')[0];
+            const deletedImage = await cloudinary.uploader.destroy(public_id, {resource_type:'image'});
 
-        if(deletedImage){
-            return true;
+            if(deletedImage){
+                return true;
+            }
+        }else if(image instanceof Array){
+            image.forEach(async img => {
+                const public_id = img.split('/')[img.split('/').length -1].split('.')[0];
+                const deletedImage = await cloudinary.uploader.destroy(public_id, {resource_type:'image'});
+                if(deletedImage){
+                    return true;
+                }
+            })
+        }else{
+            return false;
         }
     } catch (error) {
         throw new Error(error);

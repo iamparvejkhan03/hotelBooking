@@ -2,9 +2,10 @@ import { useForm } from "react-hook-form";
 import {Container, Input} from "./";
 import { faLocationDot, faUser, faCalendar } from '@fortawesome/free-solid-svg-icons';
 import { assets } from "../assets/assets";
+import { useNavigate } from "react-router-dom";
 
 function Hero(){
-    const {register, handleSubmit, formState: {errors}, getValues, setValue} = useForm({
+    const {register, handleSubmit, formState: {errors}} = useForm({
         defaultValues: {
             destination: "",
             checkIn:"",
@@ -13,8 +14,16 @@ function Hero(){
         }
     });
 
+    const navigate = useNavigate();
+
     const handleSearchForm = (data) => {
-        console.log(data);
+        try {
+            if(data){
+                navigate(`/rooms?destination=${data.destination}&guests=${data.guests}&checkin=${data.checkIn}&checkout=${data.checkOut}`);
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (
@@ -27,11 +36,12 @@ function Hero(){
                 </div>
 
                 <datalist id="cities">
-                    <option value="Greece">Greece</option>
+                    <option value="Delhi">Delhi</option>
                     <option value="Mumbai">Mumbai</option>
+                    <option value="Chennai">Chennai</option>
+                    <option value="Banglore">Banglore</option>
+                    <option value="Kolkata">Kolkata</option>
                 </datalist>
-
-                {/* flex sm:flex-row items-end sm:w-xl lg:w-2xl xl:w-5xl flex-wrap */}
 
                 <form onSubmit={handleSubmit(handleSearchForm)} className="my-5">
                     <div className="bg-white p-6 rounded-md grid md:grid-cols-2 md:gap-2 lg:grid-cols-5 lg:gap-5 items-end sm:w-xl lg:w-4xl xl:w-5xl">

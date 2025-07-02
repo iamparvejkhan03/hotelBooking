@@ -114,15 +114,69 @@ const setRoomAvailability = async (req, res) => {
 
 const getAllRooms = async (req, res) => {
     try {
-        const rooms = await Room.find().populate({
-            path: 'hotel'
-        }).sort({createdAt: -1});
+        const query = req.query;
+        let hotels;
 
-        if(!rooms){
-            return res.status(404).json(new ApiErrorHandler(false, 'No rooms found', 404));
+        if(Object.keys(query).length > 0){
+            hotels = await Hotel.aggregate([
+                {
+                    $match: {
+                        city: query.destination,
+                    }
+                },
+                {
+                    $lookup: {
+                        from:'rooms',
+                        localField:'_id',
+                        foreignField:'hotel',
+                        as:'room'
+                    }
+                },
+                {
+                    $unwind:'$room'
+                },
+                {
+                    $addFields: {
+                        room:'$room'
+                    }
+                },
+                {
+                    $project: {
+                        name:1, address:1, city:1, room:1
+                    }
+                }
+            ]);
+        }else{
+            hotels = await Hotel.aggregate([
+                {
+                    $lookup: {
+                        from:'rooms',
+                        localField:'_id',
+                        foreignField:'hotel',
+                        as:'room'
+                    }
+                },
+                {
+                    $unwind: '$room',
+                },
+                {
+                    $addFields: {
+                        room: '$room'
+                    }
+                },
+                {
+                    $project: {
+                        name:1, address:1, city:1, room:1
+                    }
+                }
+            ]);
         }
 
-        return res.status(200).json({success:true, message:'Rooms fetched', rooms});
+        if(!hotels){
+            return res.status(404).json(new ApiErrorHandler(false, 'No hotels found', 404));
+        }
+
+        return res.status(200).json({success:true, message:'Rooms fetched', hotels});
     } catch (error) {
         throw new Error(error);
     }

@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { roomsDummyData } from '../assets/assets';
+// import { roomsDummyData } from '../assets/assets';
 import { Container, Heading, RoomCard } from '../components';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 const roomType = ['Single Bed', 'Double Bed', 'Luxury Room', 'Family Suite'];
 
@@ -11,10 +12,10 @@ const priceRange = ['$0 to $500', '$500 to $1000', '$1000 to $2000', '$2000 to $
 
 const sortBy = ['Price Low to High', 'Price High to Low', 'Newest First'];
 
-const CheckBox = ({ label }) => {
+const CheckBox = ({ label, onChange }) => {
     return (
         <label className='text-sm flex gap-2'>
-            <input type="checkbox" name={label} value={label} />
+            <input type="checkbox" name={label} value={label} onChange={() => onChange(value => [...value, label.toLowerCase()])} />
             {label}
         </label>
     );
@@ -31,18 +32,35 @@ const Radio = ({ label }) => {
 
 function Rooms() {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [rooms, setRooms] = useState(null);
+    const [hotels, setHotels] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const { search } = useLocation();
+    const [typeFilter, setTypeFilter] = useState([]);
 
     useEffect(() => {
         const getAllRooms = async () => {
             try {
                 setIsLoading(true);
-                const { data } = await axios.get('/api/v1/rooms');
+                if(search){
+                    const queries = search?.split('&');
+                    const destination = queries[0]?.split('=')[1] || '';
+                    const guests = queries[1]?.split('=')[1] || '';
+                    const checkIn = queries[2]?.split('=')[1] || '';
+                    const checkOut = queries[3]?.split('=')[1] || '';
 
-                if (data.success) {
-                    setRooms(data.rooms);
-                    setIsLoading(false);
+                    const { data } = await axios.get(`/api/v1/rooms?destination=${destination}&guests=${guests}&checkIn=${checkIn}&checkOut=${checkOut}`);
+
+                    if (data.success) {
+                        setHotels(data.hotels);
+                        setIsLoading(false);
+                    }
+                }else{
+                    const { data } = await axios.get(`/api/v1/rooms`);
+
+                    if (data.success) {
+                        setHotels(data.hotels);
+                        setIsLoading(false);
+                    }
                 }
             } catch (error) {
                 console.error(error);
@@ -51,10 +69,21 @@ function Rooms() {
         }
         getAllRooms();
     }, [])
+
+    useEffect(() => {        
+        if(hotels.length > 0 && typeFilter.length > 0){
+            setHotels(prevHotels => prevHotels.filter(prevHotel => typeFilter.includes(prevHotel.room.type)))
+        }
+    }, [typeFilter])
+
+    // const handleTypeFilter = () => {
+        
+    // }
+
     return (
         <>
             {
-                rooms
+                hotels
                     ?
                     (
                         <Container className='mt-24 lg:mt-32 flex flex-col lg:flex-row justify-between items-start lg:gap-8'>
@@ -63,8 +92,8 @@ function Rooms() {
 
                                 <div>
                                     {
-                                        rooms.map(room => (
-                                            <RoomCard room={room} key={room._id} />
+                                        hotels.map(hotel => (
+                                            <RoomCard hotel={hotel} key={hotel.room._id} />
                                         ))
                                     }
                                 </div>
@@ -84,7 +113,7 @@ function Rooms() {
                                         <div className='flex flex-col'>
                                             {
                                                 roomType.map(room => (
-                                                    <CheckBox key={room} label={room} />
+                                                    <CheckBox key={room} label={room} onChange={setTypeFilter} />
                                                 ))
                                             }
                                         </div>

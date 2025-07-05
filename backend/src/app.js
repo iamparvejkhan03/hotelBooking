@@ -4,6 +4,7 @@ import hotelRouter from './routes/hotel.route.js';
 import roomRouter from './routes/room.route.js';
 import newsletterRouter from './routes/newsletter.route.js';
 import { contact } from './controllers/contact.controller.js';
+import bookingRouter from './routes/booking.route.js';
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/hotels', hotelRouter);
 app.use('/api/v1/rooms', roomRouter);
 app.use('/api/v1/newsletter', newsletterRouter);
-app.post('/api/v1/contact', contact)
+app.post('/api/v1/contact', contact);
+app.use('/api/v1/bookings', bookingRouter);
 
 export default app;

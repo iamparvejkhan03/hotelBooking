@@ -1,7 +1,32 @@
+import { useSelector } from "react-redux";
 import { assets, dashboardDummyData, userBookingsDummyData } from "../../assets/assets";
 import { Heading, OwnerContainer, OwnerSidebar } from "../../components";
+import { useState } from "react";
+import { useEffect } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 function OwnerDashboard(){
+    const accessToken = useSelector(state => state.user.user.accessToken);
+    const [ownerBookings, setOwnerBookings] = useState(null);
+
+    useEffect(() => {
+        const getOwnerBookings = async () => {
+            try {
+                const { data } = await axios.get('/api/v1/bookings/owner', { headers: { Authorization: `Bearer ${accessToken}` } });
+
+                if (data.success) {
+                    setOwnerBookings(data.ownerBookings);
+                    console.log(data.ownerBookings);
+                }
+            } catch (error) {
+                console.error(error);
+                toast.error(error.message);
+            }
+        }
+        getOwnerBookings();
+    }, [])
+
     return (
         <section className="flex min-h-[70vh]">
             <OwnerSidebar />

@@ -35,7 +35,7 @@ function Home() {
                 const { data } = await axios.get('/api/v1/rooms');
 
                 if (data.success) {
-                    setRooms(data.rooms);
+                    setRooms(data.hotels);
                 }
             } catch (error) {
                 console.error(error);
@@ -76,7 +76,7 @@ function Home() {
                                 {
                                     rooms.slice(0, 10).map((room) => (
                                         <SwiperSlide>
-                                            <HotelCard key={room._id} room={room} />
+                                            <HotelCard key={room._id} hotel={room} />
                                         </SwiperSlide>
                                     ))
                                 }

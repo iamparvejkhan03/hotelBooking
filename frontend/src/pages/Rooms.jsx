@@ -8,23 +8,23 @@ import { useLocation } from 'react-router-dom';
 
 const roomType = ['Single Bed', 'Double Bed', 'Luxury Room', 'Family Suite'];
 
-const priceRange = ['$0 to $500', '$500 to $1000', '$1000 to $2000', '$2000 to $3000'];
+const priceRange = ['0 to 50', '50 to 100', '100 to 200', '200 to 300'];
 
-const sortBy = ['Price Low to High', 'Price High to Low', 'Newest First'];
+const sortBy = ['Price Low to High', 'Price High to Low'];
 
-const CheckBox = ({ label, onChange }) => {
+const CheckBox = ({ label, updateState }) => {
     return (
         <label className='text-sm flex gap-2'>
-            <input type="checkbox" name={label} value={label} onChange={() => onChange(value => [...value, label.toLowerCase()])} />
+            <input type="checkbox" name={label} value={label} onChange={() => updateState(label)} />
             {label}
         </label>
     );
 }
 
-const Radio = ({ label }) => {
+const Radio = ({ label, updateState }) => {
     return (
         <label className='text-sm flex gap-2'>
-            <input type='radio' name='sortBy' value={label} />
+            <input type='radio' name='sortBy' value={label} onChange={() => updateState(label)} />
             {label}
         </label>
     );
@@ -35,7 +35,12 @@ function Rooms() {
     const [hotels, setHotels] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const { search } = useLocation();
-    const [typeFilter, setTypeFilter] = useState([]);
+    const [filters, setFilters] = useState({
+        type: [],
+        priceRange: null,
+        sortBy: ''
+    });
+    const [allRooms, setAllRooms] = useState([]);
 
     useEffect(() => {
         const getAllRooms = async () => {
@@ -52,6 +57,7 @@ function Rooms() {
 
                     if (data.success) {
                         setHotels(data.hotels);
+                        setAllRooms(data.hotels);
                         setIsLoading(false);
                     }
                 }else{
@@ -59,6 +65,7 @@ function Rooms() {
 
                     if (data.success) {
                         setHotels(data.hotels);
+                        setAllRooms(data.hotels);
                         setIsLoading(false);
                     }
                 }
@@ -70,20 +77,69 @@ function Rooms() {
         getAllRooms();
     }, [])
 
-    useEffect(() => {        
-        if(hotels.length > 0 && typeFilter.length > 0){
-            setHotels(prevHotels => prevHotels.filter(prevHotel => typeFilter.includes(prevHotel.room.type)))
-        }
-    }, [typeFilter])
+    const handleTypeFilter = (value) => {
+        setFilters(filters => (
+            {
+                ...filters,
+                type: filters.type.includes(value.toLowerCase()) ? filters.type.filter(t => t.toLowerCase() !== value.toLowerCase()) : [...filters.type, value.toLowerCase()],
+            }
+        ))
+    }
 
-    // const handleTypeFilter = () => {
-        
-    // }
+    const handlePriceFilter = (price) => {
+        const priceRange = price.split('to');
+        setFilters(filters => (
+            {
+                ...filters,
+                priceRange: priceRange
+            }
+        ))
+    }
+
+    const handleSortBy = (sortBy) => {
+        setFilters(filters => (
+            {
+                ...filters,
+                sortBy: sortBy
+            }
+        ))
+    }
+
+    const clearAllFilters = () => {
+        setFilters({
+            type: [],
+            priceRange: null,
+            sortBy: ''
+        })
+    }
+
+    useEffect(() => {
+        setAllRooms([...hotels]);
+        // console.log(filters);
+
+        if(filters.type.length > 0){
+            setAllRooms(allRooms => allRooms.filter(room => filters.type.includes(room.room.type.toLowerCase())));
+        }
+
+        if(filters.priceRange){
+            setAllRooms(allRooms => allRooms.filter(room => room.room.price >= filters.priceRange[0] && room.room.price <= filters.priceRange[1]));
+        }
+
+        if(filters.sortBy){
+            if(filters.sortBy === 'Price Low to High'){
+                setAllRooms(allRooms => allRooms.sort((a, b) => a.room.price - b.room.price))
+            }
+
+            if(filters.sortBy === 'Price High to Low'){
+                setAllRooms(allRooms => allRooms.sort((a, b) => b.room.price - a.room.price))
+            }
+        }
+    }, [filters, hotels])
 
     return (
         <>
             {
-                hotels
+                allRooms
                     ?
                     (
                         <Container className='mt-24 lg:mt-32 flex flex-col lg:flex-row justify-between items-start lg:gap-8'>
@@ -92,8 +148,8 @@ function Rooms() {
 
                                 <div>
                                     {
-                                        hotels.map(hotel => (
-                                            <RoomCard hotel={hotel} key={hotel.room._id} />
+                                        allRooms.map(room => (
+                                            <RoomCard hotel={room} key={room.room._id} />
                                         ))
                                     }
                                 </div>
@@ -102,8 +158,8 @@ function Rooms() {
                             <section className="w-full lg:w-3/12 border border-gray-300 rounded flex flex-col items-start order-1 mb-5 lg:order-2">
                                 <div className='uppercase flex w-full justify-between items-center px-6 py-3 border-b border-b-gray-300'>
                                     <h5 className='text-lg'>Filters</h5>
-                                    <p className='text-gray-600 text-sm'>Clear</p>
-                                    <p className='lg:hidden text-sm text-gray-600' onClick={() => setIsFilterOpen(!isFilterOpen)}>{isFilterOpen ? 'Hide' : 'Show'}</p>
+                                    <p className='text-gray-600 text-sm' onClick={() => clearAllFilters()}>Clear</p>
+                                    <p className='lg:hidden text-sm text-gray-600 cursor-pointer' onClick={() => setIsFilterOpen(!isFilterOpen)}>{isFilterOpen ? 'Hide' : 'Show'}</p>
                                 </div>
 
                                 <div className={`py-3 w-full lg:flex lg:flex-col lg:items-start ${!isFilterOpen ? 'hidden' : 'sm:flex sm:justify-around sm:items-center'}`}>
@@ -113,7 +169,7 @@ function Rooms() {
                                         <div className='flex flex-col'>
                                             {
                                                 roomType.map(room => (
-                                                    <CheckBox key={room} label={room} onChange={setTypeFilter} />
+                                                    <CheckBox key={room} label={room} updateState={handleTypeFilter} />
                                                 ))
                                             }
                                         </div>
@@ -125,7 +181,7 @@ function Rooms() {
                                         <div className='flex flex-col'>
                                             {
                                                 priceRange.map(price => (
-                                                    <CheckBox key={price} label={price} />
+                                                    <Radio key={price} label={`${price}`} updateState={handlePriceFilter} />
                                                 ))
                                             }
                                         </div>
@@ -137,7 +193,7 @@ function Rooms() {
                                         <div className='flex flex-col'>
                                             {
                                                 sortBy.map(sort => (
-                                                    <Radio key={sort} label={sort} />
+                                                    <Radio key={sort} label={sort} updateState={handleSortBy} />
                                                 ))
                                             }
                                         </div>

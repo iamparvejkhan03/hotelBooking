@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Container, Heading, Input } from "../components";
 import { assets, roomsDummyData, facilityIcons, roomCommonData, userDummyData, testimonials, hotelDummyData } from "../assets/assets";
 import { useEffect, useState } from "react";
@@ -7,13 +7,16 @@ import { faLocationDot, faUser, faCalendar } from "@fortawesome/free-solid-svg-i
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 function Room(){
     const {id} = useParams();
     const [mainImg, setMainImg] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-
     const [room, setRoom] = useState(null);
+    const navigate = useNavigate();
+
+    const accessToken = useSelector(state => state.user.user.accessToken);
 
     useEffect(() => {
         const fetchRoom = async () => {
@@ -43,8 +46,18 @@ function Room(){
         }
     });
 
-    const handleSearchForm = (data) => {
-        console.log(data);
+    const handleSearchForm = async (formData) => {
+        try {
+            const { data } = await axios.post('/api/v1/bookings/add', {guests:formData.guests, checkIn:formData.checkIn, checkOut:formData.checkOut, room:id}, {headers: {Authorization: `Bearer ${accessToken}`}});
+
+            if(data.success){
+                toast.success(data.message);
+                navigate('/user/dashboard');
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(error.message);
+        }
     }
 
     return (
@@ -72,7 +85,7 @@ function Room(){
                         </section>
 
                         <section className="my-5 w-full flex flex-col md:flex-row gap-8">
-                            <div className="w-full min-h-96 md:w-1/2">
+                            <div className="w-full lg:min-h-96 md:w-1/2">
                                 {mainImg && <img src={mainImg} alt="roomImg" className="rounded-xl cursor-grab hover:scale-[101%] transition duration-200 shadow-lg h-full w-full object-cover" />}
                             </div>
 
@@ -111,7 +124,7 @@ function Room(){
 
                                 <Input type="date" label="Check-Out" labelIcon={faCalendar} {...register('checkOut', {required:true})} />
 
-                                <Input type="submit" value="Search" className="bg-black text-white rounded-md px-4 py-2 cursor-pointer " />
+                                <Input type="submit" value="Book" className="bg-black text-white rounded-md px-4 py-2 cursor-pointer " />
 
                                 {(errors.destination || errors.checkIn || errors.checkOut || errors.guests) && <p className="text-sm text-red-500 mx-2">All fields are required.</p>}
                             </div>

@@ -60,7 +60,7 @@ function UserBookings() {
                                                             [{booking.room.type}]</span></h6>
                                                         <p className="text-gray-600 text-sm"><FontAwesomeIcon icon={faLocationDot} /><span className="ml-1">{booking.room.hotel.address}</span></p>
                                                         <p className="text-gray-600 text-sm"><FontAwesomeIcon icon={faUser} /><span className="ml-1">Guests: </span>{booking.guests}</p>
-                                                        <p>Total: ${booking.room.price}</p>
+                                                        <p>Total: ${booking.amount}</p>
                                                     </div>
                                                 </Link>
 

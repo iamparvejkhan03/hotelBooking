@@ -48,7 +48,12 @@ function Room(){
 
     const handleSearchForm = async (formData) => {
         try {
-            const { data } = await axios.post('/api/v1/bookings/add', {guests:formData.guests, checkIn:formData.checkIn, checkOut:formData.checkOut, room:id}, {headers: {Authorization: `Bearer ${accessToken}`}});
+            const checkIn = new Date(formData.checkIn).getTime();
+            const checkOut = new Date(formData.checkOut).getTime();
+            const bookingDays = (checkOut - checkIn)/(60*60*24*1000);
+            const bookingAmount = bookingDays * room.price;
+
+            const { data } = await axios.post('/api/v1/bookings/add', {guests:formData.guests, checkIn:formData.checkIn, checkOut:formData.checkOut, room:id, amount:bookingAmount}, {headers: {Authorization: `Bearer ${accessToken}`}});
 
             if(data.success){
                 toast.success(data.message);

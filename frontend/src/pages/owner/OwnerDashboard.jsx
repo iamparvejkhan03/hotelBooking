@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-function OwnerDashboard(){
+function OwnerDashboard() {
     const accessToken = useSelector(state => state.user.user.accessToken);
     const [ownerBookings, setOwnerBookings] = useState(null);
 
@@ -17,7 +17,6 @@ function OwnerDashboard(){
 
                 if (data.success) {
                     setOwnerBookings(data.ownerBookings);
-                    console.log(data.ownerBookings);
                 }
             } catch (error) {
                 console.error(error);
@@ -42,59 +41,67 @@ function OwnerDashboard(){
 
                         <div>
                             <h5 className="text-blue-500 font-semibold">Total Bookings</h5>
-                            <p>{dashboardDummyData.totalBookings}</p>
+                            <p>{ownerBookings ? ownerBookings.length : 0}</p>
                         </div>
                     </div>
-                    
+
                     <div className="bg-blue-100 flex flex-col text-center sm:text-left sm:flex-row gap-3 p-3 rounded">
                         <img src={assets.totalRevenueIcon} alt='Total Revenue' className="h-9" />
 
                         <div>
                             <h5 className="text-blue-500 font-semibold">Total Revenue</h5>
-                            <p>${dashboardDummyData.totalRevenue}</p>
+                            <p>${ownerBookings ? ownerBookings.reduce((acc, val) => val.amount + acc, 0) : 0}</p>
                         </div>
                     </div>
                 </div>
 
-                <div>
-                    <Heading heading="Recent Bookings" />
+                {
+                    (ownerBookings
+                    &&
+                    ownerBookings.length > 0)
+                    &&
+                    (
+                        <div>
+                            <Heading heading="Recent Bookings" />
 
-                    <div className="overflow-x-auto">
-                        <table className="text-left my-5">
-                            <thead className="border-2 border-blue-100 bg-blue-100">
-                                <tr>
-                                    <th className="p-1 sm:p-2 md:p-3 break-all font-normal md:font-semibold">Username</th>
-                                    <th className="p-1 sm:p-2 md:p-3 break-all font-normal md:font-semibold">Room</th>
-                                    <th className="p-1 sm:p-2 md:p-3 break-all font-normal md:font-semibold">Total Amount</th>
-                                    <th className="p-1 sm:p-2 md:p-3 break-all font-normal md:font-semibold">Payment Status</th>
-                                </tr>
-                            </thead>
+                            <div className="overflow-x-auto">
+                                <table className="text-left my-5">
+                                    <thead className="border-2 border-blue-100 bg-blue-100">
+                                        <tr>
+                                            <th className="p-1 sm:p-2 md:p-3 break-all font-normal md:font-semibold">Full Name</th>
+                                            <th className="p-1 sm:p-2 md:p-3 break-all font-normal md:font-semibold">Room</th>
+                                            <th className="p-1 sm:p-2 md:p-3 break-all font-normal md:font-semibold">Amount</th>
+                                            <th className="p-1 sm:p-2 md:p-3 break-all font-normal md:font-semibold">Payment</th>
+                                        </tr>
+                                    </thead>
 
-                            <style>
-                                {
-                                    `
+                                    <style>
+                                        {
+                                            `
                                         table tr:nth-child(even){
                                             background-color: #DBEAFE;
                                         }
                                     `
-                                }
-                            </style>
+                                        }
+                                    </style>
 
-                            <tbody>
-                                {
-                                    userBookingsDummyData.map(booking => (
-                                        <tr key={booking._id} className="border-2 border-blue-100">
-                                            <td className="p-1 sm:p-2 md:p-3 break-all font-normal">{booking.user.username}</td>
-                                            <td className="p-1 sm:p-2 md:p-3 break-all font-normal">{booking.room.roomType}</td>
-                                            <td className="p-1 sm:p-2 md:p-3 break-all font-normal">{booking.totalPrice}</td>
-                                            <td className={`p-1 sm:p-2 md:p-3 break-all font-normal`}><span className={`py-1.5 px-4 rounded-full capitalize ${booking.isPaid ? 'bg-green-200 text-green-600' : 'bg-red-200 text-red-600'}`}>{booking.status}</span></td>
-                                        </tr>
-                                    ))
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                    <tbody>
+                                        {
+                                            ownerBookings.map(booking => (
+                                                <tr key={booking._id} className="border-2 border-blue-100">
+                                                    <td className="p-1 sm:p-2 md:p-3 break-all font-normal">{booking.userData.fullName}</td>
+                                                    <td className="p-1 sm:p-2 md:p-3 break-all font-normal">{booking.room.type}</td>
+                                                    <td className="p-1 sm:p-2 md:p-3 break-all font-normal">${booking.amount}</td>
+                                                    <td className={`p-1 sm:p-2 md:p-3 break-all font-normal`}><span className={`py-1 px-4 rounded-full capitalize ${booking.isPaid ? 'bg-green-200 text-green-600' : 'bg-red-200 text-red-600'}`}>{booking.isPaid ? 'Paid' : 'Unpaid'}</span></td>
+                                                </tr>
+                                            ))
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )
+                }
             </OwnerContainer>
         </section>
     );

@@ -2,18 +2,21 @@ import Booking from "../models/booking.model.js";
 import Hotel from "../models/hotel.model.js";
 import Room from "../models/room.model.js";
 import ApiErrorHandler from "../utils/apiErrorHandler.js";
+import mongoose from "mongoose";
+
+const ObjectId = mongoose.Types.ObjectId;
 
 const addBooking = async (req, res) => {
     try {
-        const { guests, checkIn, checkOut, room } = req.body;
+        const { guests, checkIn, checkOut, room, amount } = req.body;
 
         const user = req.user._id;
 
-        if (!guests || !checkIn || !checkOut || !room) {
+        if (!guests || !checkIn || !checkOut || !room || !amount) {
             return res.status(400).json(new ApiErrorHandler(false, 'All fields are required.', 400));
         }
 
-        const booking = await Booking.create({ guests, checkIn, checkOut, user, room });
+        const booking = await Booking.create({ guests, checkIn, checkOut, user, room, amount });
 
         if (!booking) {
             return res.status(500).json(new ApiErrorHandler(false, 'Booking failed', 500));
@@ -50,32 +53,58 @@ const getOwnerBookings = async (req, res) => {
     try {
         const user = req.user._id;
 
-        const hotel = await Hotel.findOne({owner:user});
-
-        if(!hotel){
-            res.status(404).json(new ApiErrorHandler(false, 'No hotel found', 404));
-        }
-
-        const rooms = await Room.find({hotel:hotel._id});
-
-        // console.log(rooms);
-
-        if(!rooms){
-            res.status(404).json(new ApiErrorHandler(false, 'No rooms found', 404));
-        }
-
-        let ownerBookings = [];
-
-        rooms.forEach(async (room) => {
-            const booking = await Booking.findOne({room:room._id});
-            if(booking){
-                ownerBookings.push(booking);
-                console.log(`I am inside ${ownerBookings}`);
-                
+        const ownerBookings = await Booking.aggregate([
+            {
+                $lookup: {
+                    from:'rooms',
+                    localField:'room',
+                    foreignField:'_id',
+                    as:'room',
+                }
+            },
+            {
+                $unwind:'$room'
+            },
+            {
+                $lookup: {
+                    from:'hotels',
+                    localField:'room.hotel',
+                    foreignField:'_id',
+                    as:'hotel'
+                }
+            },
+            {
+                $unwind:'$hotel'
+            },
+            {
+                $lookup: {
+                    from:'users',
+                    localField:'user',
+                    foreignField:'_id',
+                    as:'userData'
+                }
+            },
+            {
+                $unwind:'$userData',
+            },
+            {
+                $match: {
+                    'hotel.owner': user,
+                }
+            },
+            {
+                $addFields: {
+                    room:'$room',
+                    hotel:'$hotel',
+                    userData: '$userData'
+                },
+            },
+            {
+                $project: {
+                    room:1, hotel:1, amount:1, guests:1, checkIn:1, checkOut:1, userData:1, isPaid:1, paymentMethod:1
+                }
             }
-        });
-
-        console.log(`I am outside ${ownerBookings}`);
+        ])
 
         if(!ownerBookings){
             return res.status(404).json(new ApiErrorHandler(false, 'No bookings found', 404));

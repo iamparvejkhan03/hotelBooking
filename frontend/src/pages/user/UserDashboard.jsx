@@ -56,7 +56,7 @@ function UserDashboard() {
                                     <h5 className="text-blue-500 font-semibold">Total Spend</h5>
                                     <p>$
                                         {
-                                            userBookings.reduce((acc, val) => acc + val.room.price, 0)
+                                            userBookings.reduce((acc, val) => acc + val.amount, 0)
                                         }
                                     </p>
                                 </div>

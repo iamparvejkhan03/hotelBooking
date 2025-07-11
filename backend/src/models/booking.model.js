@@ -33,6 +33,11 @@ const bookingSchema = new Schema({
         type: String,
         required:true,
         default:'Stripe'
+    },
+    amount: {
+        type: Number,
+        required:true,
+        trim:true,
     }
 }, {timestamps:true})
 
